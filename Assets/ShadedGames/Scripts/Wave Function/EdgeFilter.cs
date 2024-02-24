@@ -20,7 +20,7 @@ namespace ShadedGames.Scripts.Wave_Function
         }
         
         //returns true if a module matches this type of filter
-        public bool CheckModule(Cell cell)
+        public bool CheckModule(WaveFunctionNode cell)
         {
             var edge = (_edgeDirection + 2) % 4; // this is a weird equation to get the edge direction but it works
             var match = cell.GetConnections()[edge] == _filterType; // does this module's edge match with the filter type?

@@ -8,6 +8,8 @@ namespace ShadedGames.Scripts.Grid_System
     /// <summary>
     ///  Should This Grid Class support infinitely generated grid?
     /// </summary>
+    /// 
+    [Serializable]
     public class Grid<TGridObject>
     {
         public event EventHandler<OnGridObjectChangedEventArgs> OnGridObjectChanged;

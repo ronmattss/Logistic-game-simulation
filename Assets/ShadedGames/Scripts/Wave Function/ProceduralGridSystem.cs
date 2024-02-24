@@ -15,14 +15,14 @@ namespace ShadedGames.Scripts.Grid_System
     {
         private Grid<GridSpawnerObject> grid; // This is your grid, where ProceduralGridObject Can Spawn
         [SerializeField] private List<ScriptableModule> listOfPossibleObjects;
-        [SerializeField] private Cell cell;
+        [SerializeField] private WaveFunctionNode cell;
         [SerializeField] private GameObject cellPrefab;
         [SerializeField] private int width = 10;
         [SerializeField] private int height = 10;
         [SerializeField] private float cellSize = 10f;
         [SerializeField] private List<GameObject> generatedObjects = new List<GameObject>();
 
-        public Heap<Cell> orderedCells;
+        public Heap<WaveFunctionNode> orderedCells;
 
         /*
          * Load all 
@@ -37,7 +37,7 @@ namespace ShadedGames.Scripts.Grid_System
             // create a grid
             grid = new Grid<GridSpawnerObject>(width, height, cellSize, Vector3.zero,
                 (Grid<GridSpawnerObject> g, int x, int y) => new GridSpawnerObject(g, x, y));
-            orderedCells = new Heap<Cell>(width * height);
+            orderedCells = new Heap<WaveFunctionNode>(width * height);
 
             PopulateGrid();
             Generate();
@@ -60,7 +60,7 @@ namespace ShadedGames.Scripts.Grid_System
 
             placedCell.transform.name = $"{x} {y} ";
 
-            var currentCell = placedCell.GetComponent<Cell>();
+            var currentCell = placedCell.GetComponent<WaveFunctionNode>();
 
             currentCell.SetWorldPosition(grid.GetWorldPosition(x, y));
             currentCell.SetModules(GetListOfModules());
@@ -113,12 +113,12 @@ namespace ShadedGames.Scripts.Grid_System
             }
         }
 
-        public Cell GetCellOnGrid(Vector3 worldPosition)
+        public WaveFunctionNode GetCellOnGrid(Vector3 worldPosition)
         {
             return grid.GetGridObject(worldPosition).GetPlacedCell();
         }
 
-        public Cell GetCellOnGrid(int x, int y)
+        public WaveFunctionNode GetCellOnGrid(int x, int y)
         {
             if (!grid.ValidateCoordinates(x, y)) return null;
             return grid.GetGridObject(x, y).GetPlacedCell() == null ? null : grid.GetGridObject(x, y).GetPlacedCell();
@@ -170,7 +170,7 @@ namespace ShadedGames.Scripts.Grid_System
             {
                 grid = new Grid<GridSpawnerObject>(width, height, cellSize, Vector3.zero,
                     (Grid<GridSpawnerObject> g, int x, int y) => new GridSpawnerObject(g, x, y));
-                orderedCells = new Heap<Cell>(width * height);
+                orderedCells = new Heap<WaveFunctionNode>(width * height);
                 ClearGrid();
                 PopulateGrid();
                 Generate();
