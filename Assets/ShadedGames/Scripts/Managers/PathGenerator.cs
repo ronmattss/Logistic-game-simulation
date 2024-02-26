@@ -19,11 +19,12 @@ namespace ShadedGames.Scripts.Managers
     /// > Click Paths to be added
     /// > 
     /// > press OK to finish
+    /// > THIS WILL BE A UI in Game
     /// </summary>
     public class PathGenerator : Singleton<PathGenerator>
     {
 
-        public AgentBehaviour selectedAgent;
+        public Agent selectedAgent;
         public List<GeneratedRoute> routes = new();
         public Button selectNodeButton;
         public Button selectNodeLayerButton;
@@ -46,20 +47,41 @@ namespace ShadedGames.Scripts.Managers
 
 
 
+        // BUtton Function
+
         public void SetAgentRoute()
         {
-            selectedAgent.agentMovement.SetNodeWaypoints(routes[0].nodeWaypoint);
+            selectedAgent.GetAgentBehaviour().agentMovement.SetNodeWaypoints(routes[0].nodeWaypoint);
         }
+        // BUtton Function
         public void SelectWaypoint()
         {
             if (waypointsToAdd.Count > 0)
             {
-                var newRoute = new GeneratedRoute("Example Test Route", waypointsToAdd);
+                var newRoute = new GeneratedRoute("Example Test Route", new List<Node>(waypointsToAdd));
                 routes.Add(newRoute);
+
+                ClearAddedWaypoints();
             }
+
         }
 
+        void ClearAddedWaypoints()
+        {
+            waypointsToAdd.Clear();
+            currentlySelectedNodes.Clear();
+            waypointsToAdd.Capacity = 0;
+            currentlySelectedNodes.Capacity = 0;
+        }
+        void ClearCurrentlySelectedNodes()
+        {
+            currentlySelectedCell = null;
+            currentlySelectedNode = null;
+            currentlySelectedNodes.Clear();
+            currentlySelectedNodes.Capacity = 0;
 
+
+        }
 
 
 
@@ -79,7 +101,9 @@ namespace ShadedGames.Scripts.Managers
         void GetCellNodeOnGrid()
         {
             if (!pathGenerationMode) return;
+
             if (!Mouse3D.Instance.GetMouseState()) return;
+
             mousePosition = Mouse3D.GetMouseWorldPosition();
             // Get the Cell Node in the current Cell
             // NOTE: There are TWO WAYS TO DO THIS, CHECK VIA THE POSITION, 
@@ -99,6 +123,8 @@ namespace ShadedGames.Scripts.Managers
             SelectNodesForPath();
         }
 
+
+        // WE NOW CREATE A BETTER METHOD TO SELECT THE CURRENT NODES FOR A WAYPOINT
         void SelectNodesForPath()
         {
 
@@ -109,9 +135,12 @@ namespace ShadedGames.Scripts.Managers
             {
                 if (!CheckIfNeighboringNode()) return;
                 currentlySelectedNode = currentlySelectedCell.GetComponent<Node>();
-                currentlySelectedNodes.Add(currentlySelectedNode);
+                currentlySelectedNodes.Add(currentlySelectedNode); // This is for Debugging
+                waypointsToAdd.Add(currentlySelectedNode);
             }
         }
+
+        // voi SelectNodesForPathWithLimit
 
         bool CheckIfNeighboringNode()
         {

@@ -3,12 +3,18 @@ using System.Collections.Generic;
 using ShadedGames.Scripts.AgentSystem;
 using UnityEngine;
 
-public class AgentBehaviour : MonoBehaviour
+
+namespace ShadedGames.Scripts.AgentSystem
 {
 
-    public AgentMovement agentMovement;
+  public class AgentBehaviour : MonoBehaviour
+  {
 
-  // Start is called before the first frame update
+    public bool loopCurrentRoute;
+    public AgentMovement agentMovement;
+    // This is where the main Behaviour of the Agent will reside
+    // probably in an FSM Pattern 
+    // Start is called before the first frame update
     void Start()
     {
 
@@ -19,4 +25,8 @@ public class AgentBehaviour : MonoBehaviour
     {
 
     }
+  }
+
+  // Behaviours Will
+
 }

@@ -10,6 +10,7 @@ namespace ShadedGames.Scripts.AgentSystem
     /// Agent movement
     /// Agents will not move via navmesh BUT MOVE in the created GRID SYSTEM. this means the GRID should be static.
     /// Stores start, waypoints, end cells. 
+    /// HANDLES MOVEMENT LOGIC, BUT NOT THE MOVEMENT BEHAVIOR ITSELF, THIS WILL BE IN THE AGENT BEHAVIOR
     /// </summary>
     public class AgentMovement : MonoBehaviour
     {
@@ -22,6 +23,7 @@ namespace ShadedGames.Scripts.AgentSystem
         private Queue<Node> nodeWaypointsQueue = new Queue<Node>(); // this is Set by path finders or routers
         [SerializeField] private List<Cell> cellWaypoints = new List<Cell>(); // this is Set by path finders or routers
         [SerializeField] private List<Node> nodeWaypoints = new List<Node>(); // this is Set by path finders or routers
+        [SerializeField] private Stack<Node> recentWaypoints = new Stack<Node>(); // Stores recent Route, if route is looped, Pop to nodeWayPoints
         private int currentSpeed = 1;
 
 
@@ -38,7 +40,7 @@ namespace ShadedGames.Scripts.AgentSystem
         {
             tickRate = debugCurrentSpeed;
 
-           SetGridPosition();
+            SetGridPosition();
         }
 
 
@@ -50,7 +52,7 @@ namespace ShadedGames.Scripts.AgentSystem
             currentGridPosition = new Vector3(this.transform.position.x, this.transform.position.y, this.transform.position.z);
 
             currentCellPosition = GridSystem.Instance.GetCellOnGrid(currentGridPosition);
-        //    currentNodePosition = GridSystem.Instance.GetCellOnGrid(currentGridPosition).GetNode();
+            //    currentNodePosition = GridSystem.Instance.GetCellOnGrid(currentGridPosition).GetNode();
         }
 
         void SetGridPosition()
@@ -81,6 +83,7 @@ namespace ShadedGames.Scripts.AgentSystem
             {
                 var nextWaypoint = nodeWaypointsQueue.Dequeue();
                 nodeWaypoints.Remove(nextWaypoint);
+                recentWaypoints.Push(nextWaypoint);
                 MoveTo(nextWaypoint);
             }
             else
@@ -166,6 +169,7 @@ namespace ShadedGames.Scripts.AgentSystem
             {
                 Debug.Log("1 second Tick");
                 MoveToCellDebug();
+                MoveToNodeDebug();
                 timer = 0;
             }
         }
