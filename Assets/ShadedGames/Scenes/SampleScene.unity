@@ -1544,6 +1544,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e300bb76217d33a43ba790ceed7d43e2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  loopCurrentRoute: 0
   agentMovement: {fileID: 1338841017}
 --- !u!114 &1338841017
 MonoBehaviour:
@@ -2245,16 +2246,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 59d1a991a9ccdd6479ca3fd1b5c998e1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  selectedAgent: {fileID: 1338841016}
+  selectedAgent: {fileID: 1338841011}
   routes: []
   selectNodeButton: {fileID: 1177634216}
   selectNodeLayerButton: {fileID: 0}
   confirmButton: {fileID: 2047807158}
   cancelButton: {fileID: 0}
-  waypointsToAdd:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  waypointsToAdd: []
   mousePosition: {x: 0, y: 0, z: 0}
   pathGenerationMode: 0
   currentlySelectedCell: {fileID: 0}

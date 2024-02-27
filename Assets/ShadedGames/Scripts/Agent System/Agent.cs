@@ -20,6 +20,10 @@ namespace ShadedGames.Scripts.AgentSystem
         private Rigidbody rigidbody;
         private AgentBehaviour agentBehaviour;
 
+
+        // Agent States
+
+
         // FOR MOVEMENT, should we use nav mesh OR just node paths?
         // for simplicity we gonna just use the most basic one.
 
