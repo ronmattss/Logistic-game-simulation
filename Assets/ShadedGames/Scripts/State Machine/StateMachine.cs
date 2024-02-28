@@ -10,7 +10,7 @@ namespace ShadedGames.Scripts.StateMachine
         // STATES enum  SHOULD BE ON Present Form
         public enum CurrentState
         {
-            IDLE, MOVE, STOP, PROCESS, BUSY
+            IDLE, MOVING, STOPPED,LOADING,UNLOADING, BUSY
         }
         // These events are the three events in the behaviour loop
         public enum StateProcess

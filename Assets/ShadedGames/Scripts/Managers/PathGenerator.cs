@@ -157,7 +157,10 @@ namespace ShadedGames.Scripts.Managers
         }
 
 
-
+        void DebugGenerateRoute()
+        {
+            
+        }
 
         // The challenge: When mouse is down, Get the cell on the grid with a Node, then add it to the list
         // only add a new Node if it is adjacent to the previous Node. 

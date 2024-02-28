@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -19,6 +20,16 @@ namespace ShadedGames.Scripts.AgentSystem
 
         private Rigidbody rigidbody;
         private AgentBehaviour agentBehaviour;
+        
+
+
+
+        // Properties
+
+
+
+
+
 
 
         // Agent States
@@ -33,10 +44,9 @@ namespace ShadedGames.Scripts.AgentSystem
         public AgentBehaviour GetAgentBehaviour() => agentBehaviour;
 
         // Create a Dynamic virtual function that can be overwritten based on how it will move?
-
-
-
         // Start is called before the first frame update
+        // AGENT WILL CONTAIN the tasks of the vehicle and it will be passed down to the behaviors and state machine
+
         void Awake()
         {
             agentBehaviour = GetComponent<AgentBehaviour>();

@@ -1,23 +1,28 @@
 using System.Collections;
 using System.Collections.Generic;
+using ShadedGames.Scripts.AgentSystem;
+using ShadedGames.Scripts.StateMachine.AgentStates;
 using UnityEngine;
 
 namespace ShadedGames.Scripts.StateMachine
 {
 
+/// <summary>
+/// Nothing much to see here
+/// </summary>
     public class StateMachineDriver : MonoBehaviour
     {
         // Start is called before the first frame update
 
-        private StateMachine baseState;
+        private StateMachine baseState; 
         void Start()
         {
         }
 
         private void Awake()
         {
-
-        //    baseState = new StateIdle(this.gameObject, GetComponent<Animator>(), GetComponent<Rigidbody2D>());
+            // What we can do is create State classes for each agents
+            baseState = new AgentStateIdle(this.gameObject.GetComponent<Agent>(), this.gameObject);
         }
 
         // Update is called once per frame

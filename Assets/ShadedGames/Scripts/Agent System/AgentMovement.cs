@@ -25,6 +25,7 @@ namespace ShadedGames.Scripts.AgentSystem
         [SerializeField] private List<Node> nodeWaypoints = new List<Node>(); // this is Set by path finders or routers
         [SerializeField] private Stack<Node> recentWaypoints = new Stack<Node>(); // Stores recent Route, if route is looped, Pop to nodeWayPoints
         private int currentSpeed = 1;
+        private bool isOnDestination = false;
 
 
 
@@ -42,6 +43,8 @@ namespace ShadedGames.Scripts.AgentSystem
 
             SetGridPosition();
         }
+
+        public bool GetIsOnDestination() => isOnDestination;
 
 
         public Vector3 GetCurrentGridPosition() => currentGridPosition;
@@ -90,7 +93,11 @@ namespace ShadedGames.Scripts.AgentSystem
             {
                 Debug.Log("Agent on final Node");
             }
+            isOnDestination = IsOnDestination();
         }
+
+        bool IsOnDestination() => nodeWaypoints.Count == 0;
+
 
         // This is debug Move Cell moving
         public void MoveTo(Cell cell)
@@ -139,7 +146,10 @@ namespace ShadedGames.Scripts.AgentSystem
             nodeWaypointsQueue.Enqueue(currentNodePosition);
             foreach (var node in waypointNodes)
             {
-                if (currentNodePosition == node) { }
+                if (currentNodePosition == node)
+                {
+
+                }
                 else
                 {
                     nodeWaypoints.Add(node);
@@ -152,6 +162,7 @@ namespace ShadedGames.Scripts.AgentSystem
                 targetNodePosition = nodeWaypoints[lastIndex];
                 // Now you have the last element in the list
             }
+            isOnDestination = IsOnDestination();
 
         }
         // Get the current Cell position from the GridSystem
