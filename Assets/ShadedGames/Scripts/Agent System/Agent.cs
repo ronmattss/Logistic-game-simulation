@@ -21,11 +21,12 @@ namespace ShadedGames.Scripts.AgentSystem
         private Rigidbody rigidbody;
         private AgentBehaviour agentBehaviour;
         
-
+        [SerializeField] Task task;// Current Task? 
 
 
         // Properties
-
+        // BRAIN OF THE GAME OBJECT?
+        // Handles Transition Function for the FSM ( Decides where the FSM will go)
 
 
 

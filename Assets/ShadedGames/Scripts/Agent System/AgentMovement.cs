@@ -30,6 +30,7 @@ namespace ShadedGames.Scripts.AgentSystem
 
 
         // DEBUG ZONE;
+        [SerializeField] bool routeIsLooped = true;
         private int debugCurrentSpeed = 1;
         private float tickRate = 1;
         private float timer = 0f;
@@ -79,6 +80,10 @@ namespace ShadedGames.Scripts.AgentSystem
                 Debug.Log("Agent on final Cell");
             }
         }
+
+        // This directs the Agent on where to go
+        // The brain of the script basically
+        // Waypoints should be editable, in case you need to go somewhere
         public void MoveToNodeDebug()
         {
 
@@ -92,14 +97,34 @@ namespace ShadedGames.Scripts.AgentSystem
             else
             {
                 Debug.Log("Agent on final Node");
+
             }
+            // IF Route is looped and node THEN check 
+            if (routeIsLooped && nodeWaypoints.Count == 0)
+            {
+                SetNodeWaypoints(ReloopRoute());
+            }
+
             isOnDestination = IsOnDestination();
+        }
+
+        //DEBUG FOR NOW
+        List<Node> ReloopRoute()
+        {
+            var tempNodeList = new List<Node>();
+
+            while (recentWaypoints.Count > 0)
+            {
+                tempNodeList.Add(recentWaypoints.Pop());
+            }
+            return tempNodeList;
         }
 
         bool IsOnDestination() => nodeWaypoints.Count == 0;
 
 
         // This is debug Move Cell moving
+        // THIS IS WHERE THE MOVING HAPPENS
         public void MoveTo(Cell cell)
         {
             currentCellPosition = cell;
@@ -146,11 +171,7 @@ namespace ShadedGames.Scripts.AgentSystem
             nodeWaypointsQueue.Enqueue(currentNodePosition);
             foreach (var node in waypointNodes)
             {
-                if (currentNodePosition == node)
-                {
-
-                }
-                else
+                if (currentNodePosition != node)
                 {
                     nodeWaypoints.Add(node);
                     nodeWaypointsQueue.Enqueue(node);
@@ -173,6 +194,11 @@ namespace ShadedGames.Scripts.AgentSystem
 
 
         private void FixedUpdate()
+        {
+            //DebugMoveUpdate();
+        }
+
+        public void DebugMoveUpdate()
         {
             timer += Time.fixedDeltaTime;
 

@@ -31,7 +31,7 @@ namespace ShadedGames.Scripts.StateMachine.AgentStates
             }
             else
             {
-                agentMovement.MoveToNodeDebug();
+                agentMovement.DebugMoveUpdate(); // THIS WILL BE CHANGED
                 return;
             }
         }

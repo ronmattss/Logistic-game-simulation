@@ -10,11 +10,11 @@ namespace ShadedGames.Scripts.StateMachine.AgentStates
     /// </summary>
     public class AgentStateIdle : StateMachine
     {
-        AgentMovement agentMovement;
+        private AgentMovement agentMovement;
         public AgentStateIdle(Agent _agent, GameObject _agentGameObject) : base(_agent, _agentGameObject)
         {
             currentStateName = CurrentState.IDLE;
-            agentMovement = agent.GetAgentBehaviour().GetAgentMovement();
+            agentMovement = _agent.GetAgentBehaviour().GetAgentMovement();
         }
 
         public override void Enter()
