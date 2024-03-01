@@ -14,19 +14,15 @@ namespace ShadedGames.Scripts.StateMachine
     {
         // Start is called before the first frame update
 
-        private StateMachine baseState; 
-        void Start()
-        {
-        }
-
-        private void Awake()
+        protected StateMachine baseState; 
+         public virtual void Awake()
         {
             // What we can do is create State classes for each agents
-            baseState = new AgentStateIdle(this.gameObject.GetComponent<Agent>(), this.gameObject);
+           // baseState = new AgentStateIdle(this.gameObject.GetComponent<Agent>(), this.gameObject);
         }
 
         // Update is called once per frame
-        void Update()
+        public virtual void  Update()
         {
             baseState = baseState.Process();
         }

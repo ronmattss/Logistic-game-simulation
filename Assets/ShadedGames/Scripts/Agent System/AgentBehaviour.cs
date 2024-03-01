@@ -1,31 +1,36 @@
 using System.Collections;
 using System.Collections.Generic;
 using ShadedGames.Scripts.AgentSystem;
+using ShadedGames.Scripts.StateMachine;
+using ShadedGames.Scripts.StateMachine.AgentStates;
 using UnityEngine;
 
 
 namespace ShadedGames.Scripts.AgentSystem
 {
 
-  public class AgentBehaviour : MonoBehaviour
+  // NOW THIS MAKES SENSE :>
+  // AGENT BEHAVIOR INHERITS STATE MACHINE DRIVER
+  public class AgentBehaviour : StateMachineDriver
   {
 
     public bool loopCurrentRoute = false;
-    public AgentMovement agentMovement;
+    private AgentMovement agentMovement;
     public AgentMovement GetAgentMovement() => agentMovement;
-    // This is where the main Behaviour of the Agent will reside
-    // probably in an FSM Pattern 
-    // Start is called before the first frame update
-    void Start()
+
+
+    public override void Awake()
     {
+      base.Awake();
+      baseState = new AgentStateIdle(this.gameObject.GetComponent<Agent>(), this.gameObject);
 
     }
-
-    // Update is called once per frame
-    void Update()
+    public override void Update()
     {
-
+      base.Update();
     }
+
+
   }
 
   // Behaviours Will

@@ -11,7 +11,7 @@ namespace ShadedGames.Scripts.AgentSystem
     /// <summary>
     /// Agent is the base GameObject for things that move in the grid
     /// It will have the properties of a basic Physics object
-    /// Extend as you like
+    /// Extend as you like, it just make sense that this is the entry point if you need things from the Agent
     /// </summary>
     public class Agent : MonoBehaviour
     {
@@ -20,10 +20,18 @@ namespace ShadedGames.Scripts.AgentSystem
 
         private Rigidbody rigidbody;
         private AgentBehaviour agentBehaviour;
-        
-        [SerializeField] Task task;// Current Task? 
+
+        [SerializeField] AgentRouteManager agentRouteManager;
 
 
+        [SerializeField] Task task;
+
+        public AgentRouteManager GetAgentRouteManager() => agentRouteManager;
+
+
+        // Current Task? 
+
+        // When Agent is onDestination Update something here
         // Properties
         // BRAIN OF THE GAME OBJECT?
         // Handles Transition Function for the FSM ( Decides where the FSM will go)
@@ -51,6 +59,7 @@ namespace ShadedGames.Scripts.AgentSystem
         void Awake()
         {
             agentBehaviour = GetComponent<AgentBehaviour>();
+            agentRouteManager = GetComponent<AgentRouteManager>();
         }
 
         // Update is called once per frame

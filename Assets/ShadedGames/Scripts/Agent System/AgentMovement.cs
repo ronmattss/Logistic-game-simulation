@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 
 namespace ShadedGames.Scripts.AgentSystem
@@ -28,8 +29,14 @@ namespace ShadedGames.Scripts.AgentSystem
         private bool isOnDestination = false;
 
 
+        public UnityEvent onWhenInFinalDestination;
+
+
+
+
 
         // DEBUG ZONE;
+        [SerializeField] Agent agent;
         [SerializeField] bool routeIsLooped = true;
         private int debugCurrentSpeed = 1;
         private float tickRate = 1;
@@ -40,6 +47,7 @@ namespace ShadedGames.Scripts.AgentSystem
 
         void Awake()
         {
+            agent = GetComponent<Agent>();
             tickRate = debugCurrentSpeed;
 
             SetGridPosition();
@@ -84,9 +92,28 @@ namespace ShadedGames.Scripts.AgentSystem
         // This directs the Agent on where to go
         // The brain of the script basically
         // Waypoints should be editable, in case you need to go somewhere
+
+        public void MoveToNextWaypoint()
+        {
+            var waypoint = agent.GetAgentRouteManager().GetNextRouteNodeWaypoint();
+            //isOnDestination = agent.GetAgentRouteManager().IsOnFinalWaypoint(); // not sure if this is ok
+
+            if (waypoint == null)
+            {
+                Debug.Log("Agent on final Node");
+                onWhenInFinalDestination?.Invoke();
+
+            }
+            else
+            {
+                MoveTo(waypoint);
+            }
+
+        }
+
         public void MoveToNodeDebug()
         {
-
+            // Check available Waypoint Nodes, if 0 then check if it is looping
             if (nodeWaypointsQueue.Count > 0)
             {
                 var nextWaypoint = nodeWaypointsQueue.Dequeue();
@@ -94,19 +121,27 @@ namespace ShadedGames.Scripts.AgentSystem
                 recentWaypoints.Push(nextWaypoint);
                 MoveTo(nextWaypoint);
             }
-            else
-            {
-                Debug.Log("Agent on final Node");
 
-            }
-            // IF Route is looped and node THEN check 
+            // IF Route is looped and nodes are empty THEN check 
             if (routeIsLooped && nodeWaypoints.Count == 0)
             {
                 SetNodeWaypoints(ReloopRoute());
             }
+            else
+            {
+                Debug.Log("Agent on final Node");
+                onWhenInFinalDestination?.Invoke();
+            }
 
             isOnDestination = IsOnDestination();
+
         }
+
+        // Moving should only be just moving
+        // Agent Route Manager?
+
+
+
 
         //DEBUG FOR NOW
         List<Node> ReloopRoute()
@@ -163,6 +198,8 @@ namespace ShadedGames.Scripts.AgentSystem
             }
 
         }
+
+        // This is OKAY
         public void SetNodeWaypoints(List<Node> waypointNodes)
         {
             Debug.Log($"Test List: {waypointNodes.Count}");
