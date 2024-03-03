@@ -51,7 +51,7 @@ namespace ShadedGames.Scripts.Managers
 
         public void SetAgentRoute()
         {
-            selectedAgent.GetAgentBehaviour().agentMovement.SetNodeWaypoints(routes[0].nodeWaypoint);
+            selectedAgent.GetAgentRouteManager().SetNodeWaypoints(routes[0].nodeWaypoint);
         }
         // BUtton Function
         public void SelectWaypoint()

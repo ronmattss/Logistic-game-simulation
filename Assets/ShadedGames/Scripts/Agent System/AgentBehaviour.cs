@@ -21,6 +21,7 @@ namespace ShadedGames.Scripts.AgentSystem
 
     public override void Awake()
     {
+      agentMovement = GetComponent<AgentMovement>();
       base.Awake();
       baseState = new AgentStateIdle(this.gameObject.GetComponent<Agent>(), this.gameObject);
 

@@ -2,6 +2,7 @@
 using UnityEngine;
 using System;
 using System.Collections.Generic;
+using UnityEngine.Events;
 
 
 public class AgentRouteManager : MonoBehaviour
@@ -16,14 +17,17 @@ public class AgentRouteManager : MonoBehaviour
     [SerializeField] private Cell targetCellPosition;
     [SerializeField] private Node targetNodePosition;
     private Queue<Cell> cellWaypointsQueue = new Queue<Cell>(); // this is Set by path finders or routers
-    private Queue<Node> nodeWaypointsQueue = new Queue<Node>(); // this is Set by path finders or routers
+    private Queue<Node> currentNodeWaypointsQueue = new Queue<Node>(); // this is Set by path finders or routers
     [SerializeField] private List<Cell> cellWaypoints = new List<Cell>(); // this is Set by path finders or routers
     [SerializeField] private List<Node> nodeWaypoints = new List<Node>(); // this is Set by path finders or routers
     [SerializeField] private Stack<Node> recentWaypoints = new Stack<Node>(); // Stores recent Route, if route is looped, Pop to nodeWayPoints
 
 
     // Create Route Class
-    [SerializeField] bool routeIsLooped = false;
+
+    [SerializeField] bool routeIsLooped = false; // THIS SHOULD BE CHANGED FROM THE ROUTE GENERATION CLASS, MAKE IT LATER AFTER TESTING
+    public UnityEvent onReceiveRoute;
+    public UnityEvent OnFinalWaypoint;
 
 
 
@@ -33,14 +37,14 @@ public class AgentRouteManager : MonoBehaviour
     {
         Debug.Log($"Test List: {waypointNodes.Count}");
         nodeWaypoints.Clear();
-        nodeWaypointsQueue.Clear();
-        nodeWaypointsQueue.Enqueue(currentNodePosition);
+        currentNodeWaypointsQueue.Clear();
+        currentNodeWaypointsQueue.Enqueue(currentNodePosition);
         foreach (var node in waypointNodes)
         {
             if (currentNodePosition != node)
             {
                 nodeWaypoints.Add(node);
-                nodeWaypointsQueue.Enqueue(node);
+                currentNodeWaypointsQueue.Enqueue(node);
             }
         }
         int lastIndex = nodeWaypoints.Count - 1;
@@ -65,34 +69,58 @@ public class AgentRouteManager : MonoBehaviour
     }
 
     // Wrapped dequeueing of Node Waypoints
+
+
+
+    public bool IsOnFinalWaypoint()
+    {
+        if (routeIsLooped && currentNodeWaypointsQueue.Count == 0)
+        {
+            SetNodeWaypoints(ReloopRoute()); // This should only be called once
+            return false;
+        }
+        return currentNodeWaypointsQueue.Count == 0;
+    }
+
+
+    #endregion
+
+
+    #region Use Waypoints
+    /// <summary>
+    /// Dequeue a Node to be used
+    /// Store it to a stack
+    /// </summary>
+    /// <returns></returns>
     Node UseNextRouteNodeWaypoint()
     {
-        var nextWaypoint = nodeWaypointsQueue.Dequeue();
+        var nextWaypoint = currentNodeWaypointsQueue.Dequeue();
         nodeWaypoints.Remove(nextWaypoint);
         recentWaypoints.Push(nextWaypoint);
         return nextWaypoint;
     }
-
-
-    public bool IsOnFinalWaypoint() => nodeWaypointsQueue.Count == 0;
-    #endregion 
-
-    #region Use Waypoints
+    /// <summary>
+    /// This wraps the function of using Nodes to be used on Movements or Routes. Probably ALso maybe used on Pathfinding
+    /// </summary>
+    /// <returns></returns>
     public Node GetNextRouteNodeWaypoint()
     {
-        if (nodeWaypointsQueue.Count > 0)
-        {
-            return UseNextRouteNodeWaypoint();
-
-        }
-        if (routeIsLooped && nodeWaypointsQueue.Count == 0)
+        Debug.Log($"Current Nodes: {currentNodeWaypointsQueue.Count}");
+        if (routeIsLooped && currentNodeWaypointsQueue.Count == 0)
         {
             SetNodeWaypoints(ReloopRoute());
-
+            Debug.Log(" Looped Route");
             return UseNextRouteNodeWaypoint();
+        }
+        if (currentNodeWaypointsQueue.Count > 0)
+        {
+            return UseNextRouteNodeWaypoint();
+
         }
         else
         {
+            // OnDestination event can be invoked here
+
             return null;
         }
     }

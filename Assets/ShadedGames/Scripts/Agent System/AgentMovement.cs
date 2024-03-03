@@ -29,7 +29,6 @@ namespace ShadedGames.Scripts.AgentSystem
         private bool isOnDestination = false;
 
 
-        public UnityEvent onWhenInFinalDestination;
 
 
 
@@ -53,7 +52,7 @@ namespace ShadedGames.Scripts.AgentSystem
             SetGridPosition();
         }
 
-        public bool GetIsOnDestination() => isOnDestination;
+        public bool GetIsOnDestination() => agent.GetAgentRouteManager().IsOnFinalWaypoint();
 
 
         public Vector3 GetCurrentGridPosition() => currentGridPosition;
@@ -93,69 +92,27 @@ namespace ShadedGames.Scripts.AgentSystem
         // The brain of the script basically
         // Waypoints should be editable, in case you need to go somewhere
 
-        public void MoveToNextWaypoint()
+        // DO NOT CALL THIS IF YOU ARE NOT IN MOVING STATE
+        public void MoveToNextWaypointDebug()
         {
             var waypoint = agent.GetAgentRouteManager().GetNextRouteNodeWaypoint();
-            //isOnDestination = agent.GetAgentRouteManager().IsOnFinalWaypoint(); // not sure if this is ok
 
-            if (waypoint == null)
-            {
-                Debug.Log("Agent on final Node");
-                onWhenInFinalDestination?.Invoke();
-
-            }
-            else
+            if (waypoint != null)
             {
                 MoveTo(waypoint);
-            }
-
-        }
-
-        public void MoveToNodeDebug()
-        {
-            // Check available Waypoint Nodes, if 0 then check if it is looping
-            if (nodeWaypointsQueue.Count > 0)
-            {
-                var nextWaypoint = nodeWaypointsQueue.Dequeue();
-                nodeWaypoints.Remove(nextWaypoint);
-                recentWaypoints.Push(nextWaypoint);
-                MoveTo(nextWaypoint);
-            }
-
-            // IF Route is looped and nodes are empty THEN check 
-            if (routeIsLooped && nodeWaypoints.Count == 0)
-            {
-                SetNodeWaypoints(ReloopRoute());
+                isOnDestination = false;
             }
             else
             {
                 Debug.Log("Agent on final Node");
-                onWhenInFinalDestination?.Invoke();
-            }
+                isOnDestination = true;
+                agent.GetAgentRouteManager().OnFinalWaypoint.Invoke(); //  This still does not make any sense to invoke this here
 
-            isOnDestination = IsOnDestination();
+            }
 
         }
 
-        // Moving should only be just moving
-        // Agent Route Manager?
 
-
-
-
-        //DEBUG FOR NOW
-        List<Node> ReloopRoute()
-        {
-            var tempNodeList = new List<Node>();
-
-            while (recentWaypoints.Count > 0)
-            {
-                tempNodeList.Add(recentWaypoints.Pop());
-            }
-            return tempNodeList;
-        }
-
-        bool IsOnDestination() => nodeWaypoints.Count == 0;
 
 
         // This is debug Move Cell moving
@@ -170,59 +127,11 @@ namespace ShadedGames.Scripts.AgentSystem
             currentNodePosition = node;
             this.transform.position = new Vector3(currentNodePosition.transform.position.x, 1, currentNodePosition.transform.position.z);
         }
-        public void MoveToCell()
-        {
-
-        }
 
 
-        public void SetWaypoints(List<Cell> waypointCells)
-        {
-            cellWaypoints.Clear();
-            cellWaypointsQueue.Clear();
-            cellWaypointsQueue.Enqueue(currentCellPosition);
-            foreach (var cell in waypointCells)
-            {
-                if (currentCellPosition == cell) { }
-                else
-                {
-                    cellWaypoints.Add(cell);
-                    cellWaypointsQueue.Enqueue(cell);
-                }
-            }
-            int lastIndex = cellWaypoints.Count - 1;
-            if (lastIndex >= 0)
-            {
-                targetCellPosition = cellWaypoints[lastIndex];
-                // Now you have the last element in the list
-            }
 
-        }
 
-        // This is OKAY
-        public void SetNodeWaypoints(List<Node> waypointNodes)
-        {
-            Debug.Log($"Test List: {waypointNodes.Count}");
-            nodeWaypoints.Clear();
-            nodeWaypointsQueue.Clear();
-            nodeWaypointsQueue.Enqueue(currentNodePosition);
-            foreach (var node in waypointNodes)
-            {
-                if (currentNodePosition != node)
-                {
-                    nodeWaypoints.Add(node);
-                    nodeWaypointsQueue.Enqueue(node);
-                }
-            }
-            int lastIndex = nodeWaypoints.Count - 1;
-            if (lastIndex >= 0)
-            {
-                targetNodePosition = nodeWaypoints[lastIndex];
-                // Now you have the last element in the list
-            }
-            isOnDestination = IsOnDestination();
 
-        }
         // Get the current Cell position from the GridSystem
         public void SetGridCellPosition()
         {
@@ -242,8 +151,9 @@ namespace ShadedGames.Scripts.AgentSystem
             if (timer >= tickRate)
             {
                 Debug.Log("1 second Tick");
-                MoveToCellDebug();
-                MoveToNodeDebug();
+                // MoveToCellDebug();
+                // MoveToNodeDebug();
+                MoveToNextWaypointDebug();
                 timer = 0;
             }
         }

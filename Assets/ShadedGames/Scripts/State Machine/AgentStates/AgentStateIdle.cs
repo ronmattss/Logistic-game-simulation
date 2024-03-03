@@ -30,7 +30,7 @@ namespace ShadedGames.Scripts.StateMachine.AgentStates
 
 
 
-            if (!agentMovement.GetIsOnDestination())
+            if (!agentMovement.GetIsOnDestination()) // CHECK IF THERE ARE AVAILABLE NODES, REFACTOR THIS
             {
                 nextState = new AgentStateMoving(this.agent, this.agentGameObject);
                 stateStatus = StateProcess.EXIT;
