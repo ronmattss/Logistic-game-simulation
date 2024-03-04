@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using ShadedGames.Scripts.Astar;
 using UnityEngine;
 
 
@@ -8,9 +9,11 @@ using UnityEngine;
 /// </summary>
 public class Node : MonoBehaviour
 {
+    public FieldNode node; // Instantiate on Grid Placement 
     private Vector3 worldPosition;
     private Vector3 gridPosition;
     [SerializeField] private Node[] neigborNodes = new Node[4];
+    [SerializeField] private bool isWalkable = false;
 
     public Node[] GetNodeNeighbors() => neigborNodes;
     public void SetNodeNeighbors(Node neighbor, int nodeIndex)
@@ -23,7 +26,10 @@ public class Node : MonoBehaviour
     }
 
 
-
+    public void InstantiateFieldNode()
+    {
+        
+    }
 
     // Start is called before the first frame update
     void Start()

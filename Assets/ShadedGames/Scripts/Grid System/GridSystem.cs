@@ -63,6 +63,11 @@ public class GridSystem : Singleton<GridSystem>
         placedCell.transform.name = $"{x} {y} ";
         placedCell.transform.parent = this.transform;
 
+        // Initialize Field Nodes
+        
+
+
+
         var currentCell = placedCell.GetComponent<Cell>();
 
         currentCell.SetWorldPosition(grid.GetWorldPosition(x, y));
