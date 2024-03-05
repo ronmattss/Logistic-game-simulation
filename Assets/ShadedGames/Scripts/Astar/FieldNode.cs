@@ -19,15 +19,17 @@ namespace ShadedGames.Scripts.Astar
         int heapIndex;
 
         public FieldNode parent;
+        public Node nodeParent;
 
 
-        public FieldNode(bool _isPlaceable, Vector3 _worldPos, int _x, int _y, int _movementPenalty)
+        public FieldNode(bool _isPlaceable, Vector3 _worldPos, int _x, int _y, int _movementPenalty, Node _nodeParent)
         {
             isPlaceable = _isPlaceable;
             worldPosition = _worldPos;
             gridX = _x;
             gridY = _y;
             movementPenalty = _movementPenalty;
+            nodeParent = _nodeParent;
         }
         public FieldNode()
         {

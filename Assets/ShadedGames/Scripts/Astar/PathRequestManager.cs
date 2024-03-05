@@ -16,6 +16,8 @@ namespace ShadedGames.Scripts.Astar
         public bool success;
         public Action<Vector3[], bool> callBack;
 
+            /// TODO: CALLBACK PATHRESULT AND WAYPOINTS AND WHAT WILL BE RETURND
+             // TODO: CURRENT 0305
         public PathResult(Vector3[] path, bool success, Action<Vector3[], bool> callBack)
         {
             this.path = path;
