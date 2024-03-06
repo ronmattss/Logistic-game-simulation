@@ -3,6 +3,8 @@ using UnityEngine;
 using System;
 using System.Collections.Generic;
 using UnityEngine.Events;
+using ShadedGames.Scripts.Astar;
+using System.IO;
 
 
 public class AgentRouteManager : MonoBehaviour
@@ -13,21 +15,56 @@ public class AgentRouteManager : MonoBehaviour
     // AgentRouteManager will deal with the Waypoints and nodes33
     [SerializeField] private Vector3 currentGridPosition;
     [SerializeField] private Cell currentCellPosition;
-    [SerializeField] private Node currentNodePosition;
     [SerializeField] private Cell targetCellPosition;
-    [SerializeField] private Node targetNodePosition;
     private Queue<Cell> cellWaypointsQueue = new Queue<Cell>(); // this is Set by path finders or routers
     private Queue<Node> currentNodeWaypointsQueue = new Queue<Node>(); // this is Set by path finders or routers
     [SerializeField] private List<Cell> cellWaypoints = new List<Cell>(); // this is Set by path finders or routers
     [SerializeField] private List<Node> nodeWaypoints = new List<Node>(); // this is Set by path finders or routers
     [SerializeField] private Stack<Node> recentWaypoints = new Stack<Node>(); // Stores recent Route, if route is looped, Pop to nodeWayPoints
+    [SerializeField] private List<Node> aStarWaypoints = new List<Node>();
 
-
+    [SerializeField] private Node currentNodePosition;
+    [SerializeField] private Node targetNodePosition;
     // Create Route Class
 
     [SerializeField] bool routeIsLooped = false; // THIS SHOULD BE CHANGED FROM THE ROUTE GENERATION CLASS, MAKE IT LATER AFTER TESTING
     public UnityEvent onReceiveRoute;
     public UnityEvent OnFinalWaypoint;
+
+    
+    public void RequestAStarPath()
+    {
+        PathRequestManager.Instance.RequestPath(new PathRequest(currentNodePosition,targetNodePosition,))
+    }
+
+
+
+    // Request Path With AStar
+
+    public void OnPathFound(Vector3[] waypoints, bool pathSuccessful)
+    {
+        if (pathSuccessful)
+        {
+            path = new Path(waypoints, transform.position, turnDistance, stoppingDistance);
+
+            //    Debug.Log("How Many Times I am Called?");
+            // pathWays.Add(this.gameObject.transform.position);
+            pathWays.UnionWith(waypoints);
+            AddPathWay(pathWays.ToList());
+            StopCoroutine("FollowPath");
+            // StartCoroutine("FollowPath");
+        }
+        else
+        {
+            Debug.Log(this + " No Path");
+        }
+    }
+
+
+
+
+
+
 
 
 
