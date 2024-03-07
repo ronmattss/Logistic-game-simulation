@@ -1444,6 +1444,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e45423a1795c91b45a6233aa36dbd961, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  agentRouteManager: {fileID: 0}
 --- !u!136 &1338841012
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -1545,7 +1546,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   loopCurrentRoute: 0
-  agentMovement: {fileID: 1338841017}
 --- !u!114 &1338841017
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1565,6 +1565,8 @@ MonoBehaviour:
   targetNodePosition: {fileID: 0}
   cellWaypoints: []
   nodeWaypoints: []
+  agent: {fileID: 0}
+  routeIsLooped: 1
 --- !u!1 &1502124238
 GameObject:
   m_ObjectHideFlags: 0
@@ -2041,33 +2043,13 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1978639319}
-  - component: {fileID: 1978639318}
   m_Layer: 0
-  m_Name: DefaultGrid
+  m_Name: ~~Managers~~
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1978639318
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1978639317}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e1bcdcff640e72a419a51a7bec440bb8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  blankCellPrefab: {fileID: 6344061975342280717, guid: ba974413020854f4e8b47841008a35c6,
-    type: 3}
-  width: 10
-  height: 10
-  cellSize: 10
-  generatedObjects: []
-  cellGrid: []
 --- !u!4 &1978639319
 Transform:
   m_ObjectHideFlags: 0
@@ -2227,8 +2209,11 @@ GameObject:
   - component: {fileID: 2094409437}
   - component: {fileID: 2094409436}
   - component: {fileID: 2094409438}
+  - component: {fileID: 2094409441}
+  - component: {fileID: 2094409440}
+  - component: {fileID: 2094409439}
   m_Layer: 0
-  m_Name: ~~ Managers ~~
+  m_Name: Path And Grid Manager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2289,6 +2274,52 @@ MonoBehaviour:
   mouseColliderLayerMask:
     serializedVersion: 2
     m_Bits: 1
+--- !u!114 &2094409439
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2094409435}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e1bcdcff640e72a419a51a7bec440bb8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  blankCellPrefab: {fileID: 6344061975342280717, guid: ba974413020854f4e8b47841008a35c6,
+    type: 3}
+  width: 10
+  height: 10
+  cellSize: 10
+  generatedObjects: []
+  cellGrid: []
+--- !u!114 &2094409440
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2094409435}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8e7ef699166ed25459ed932e7789d4ae, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &2094409441
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2094409435}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 40e0fe815468f5642ae6a3b75ba127ba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  seeker: {fileID: 0}
+  target: {fileID: 0}
+  grid: {fileID: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -2300,8 +2331,8 @@ SceneRoots:
   - {fileID: 932927196}
   - {fileID: 126072736}
   - {fileID: 1313666858}
-  - {fileID: 1978639319}
   - {fileID: 1502124240}
   - {fileID: 1338841015}
   - {fileID: 68213032}
+  - {fileID: 1978639319}
   - {fileID: 2094409437}
