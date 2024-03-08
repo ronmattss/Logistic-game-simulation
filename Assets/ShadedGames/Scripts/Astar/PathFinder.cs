@@ -39,9 +39,9 @@ namespace ShadedGames.Scripts.Astar
         public void FindPath(PathRequest request, Action<PathResult> callback)
         {
             // Finding a way how to instantiate THESE
-            FieldNode startNode = new FieldNode(); // will change THIS
-            FieldNode endNode = new FieldNode();
-
+            FieldNode startNode = request.pathStart.GetFieldNode(); // will change THIS
+            FieldNode endNode = request.pathEnd.GetFieldNode();
+            // TODO: NOW WHAT
             Vector3[] waypoints = new Vector3[0];
             bool pathSuccess = false;
             if (startNode.isPlaceable && endNode.isPlaceable)

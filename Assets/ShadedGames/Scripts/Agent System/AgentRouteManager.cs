@@ -34,7 +34,7 @@ public class AgentRouteManager : MonoBehaviour
     
     public void RequestAStarPath()
     {
-        PathRequestManager.Instance.RequestPath(new PathRequest(currentNodePosition,targetNodePosition,))
+        PathRequestManager.Instance.RequestPath(new PathRequest(currentNodePosition, targetNodePosition, OnPathFound)); // TODO:: THIS
     }
 
 
@@ -45,7 +45,7 @@ public class AgentRouteManager : MonoBehaviour
     {
         if (pathSuccessful)
         {
-            path = new Path(waypoints, transform.position, turnDistance, stoppingDistance);
+            path = new Path(waypoints, transform.position, turnDistance, stoppingDistance); //TODO: THIS
 
             //    Debug.Log("How Many Times I am Called?");
             // pathWays.Add(this.gameObject.transform.position);

@@ -65,10 +65,10 @@ namespace ShadedGames.Scripts.Astar
     }
     public struct PathRequest
     {
-        public Vector3 pathStart;
-        public Vector3 pathEnd;
+        public Node pathStart;
+        public Node pathEnd;
         public Action<Vector3[], bool> callBack;
-        public PathRequest(Vector3 _start, Vector3 _end, Action<Vector3[], bool> _callBack)
+        public PathRequest(Node _start, Node _end, Action<Vector3[], bool> _callBack)
         {
             pathStart = _start;
             pathEnd = _end;
