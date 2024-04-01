@@ -25,6 +25,7 @@ namespace ShadedGames.Scripts.Grid_System
 
 
         public Grid<GridNodeOjbect> GetGrid() => grid;
+        public int GetGridSize() => width * height;
         public List<Cell> GetCellGrid() => cellGrid;
 
 
@@ -66,7 +67,7 @@ namespace ShadedGames.Scripts.Grid_System
             var placedCell = Instantiate(blankCellPrefab, grid.GetCellMidPoint(x, y), Quaternion.identity);
 
             placedCell.transform.name = $"{x} {y} ";
-            placedCell.transform.parent = this.transform;
+           // placedCell.transform.parent = this.transform;
 
             // Initialize Field Nodes
 
@@ -123,10 +124,22 @@ namespace ShadedGames.Scripts.Grid_System
 
             for (int i = 0; i < node.GetNodeNeighbors().Length; i++)
             {
-                neighbors.Add(node.GetNodeNeighbors()[i].GetFieldNode());
+               
+                if (node.GetNodeNeighbors()[i] == null)
+                {
+                 //   neighbors.Add(null);
+                }
+                else
+                {
+                   var nodeNeighbors = node.GetNodeNeighbors()[i];
+                    neighbors.Add(nodeNeighbors.GetFieldNode());
+              //  Debug.Log($"Node Direction: {i} World Position: {nodeNeighbors.GetFieldNode().worldPosition}");
+                }
             }
             return neighbors;
         }
+
+
         
 
         // Update is called once per frame

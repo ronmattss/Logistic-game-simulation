@@ -48,7 +48,7 @@ namespace ShadedGames.Scripts.Astar
             {
 
                 // CHANGE FIELDNODE size to a Variable
-                PathFinderHeap<FieldNode> openSet = new PathFinderHeap<FieldNode>(100); // List for unoptimized version
+                PathFinderHeap<FieldNode> openSet = new PathFinderHeap<FieldNode>(grid.GetGridSize()); // List for unoptimized version
                 HashSet<FieldNode> closedSet = new HashSet<FieldNode>();
 
                 openSet.Add(startNode);
@@ -62,6 +62,7 @@ namespace ShadedGames.Scripts.Astar
                     {
                         // timer
                         Debug.Log(this.transform.name + " path Found ");
+                        pathSuccess = true;
                         break;
                     }
 
@@ -69,6 +70,7 @@ namespace ShadedGames.Scripts.Astar
                     // Need revised FieldNode and Grid
                     foreach (FieldNode neighbor in grid.GetNeighbors(currentNode.nodeParent))
                     {
+                        Debug.Log("Calculating Neighbors");
                         if (!neighbor.isPlaceable || closedSet.Contains(neighbor))
                         {
                             continue;
@@ -94,14 +96,27 @@ namespace ShadedGames.Scripts.Astar
                     }
 
                 }
+
+
+                // DEBUG TO SHOW THE NODES
+                foreach (var item in closedSet)
+                {
+                    Debug.Log($"Debug closedSet Vectors: {item.worldPosition}");
+                }
             }
+
+
+
             if (pathSuccess)
             {
+                Debug.Log($"Path Success: {endNode}");
+                
                 waypoints = TracePath(startNode, endNode);
 
                 pathSuccess = waypoints.Length > 0;
 
             }
+            Debug.Log($"Waypoints Count on PathFinder: {waypoints.Length}");
             callback(new PathResult(waypoints, pathSuccess, request.callBack));
             /// TODO: CALLBACK PATHRESULT AND WAYPOINTS AND WHAT WILL BE RETURND
 
@@ -118,7 +133,15 @@ namespace ShadedGames.Scripts.Astar
                 currentNode = currentNode.parent;
             }
 
-            Vector3[] waypoints = SimplifyPath(path);
+            Vector3[] waypoints = new Vector3[path.Count];
+            for (int i = 0; i < path.Count; i++)
+            {
+                Debug.Log($"Waypoint Raw: {waypoints[i]} ");
+                Debug.Log($"Waypoint Midpoint: {GridSystem.Instance.GetGrid().GetCellMidPoint((int)waypoints[i].x, (int)waypoints[i].z)} ");
+
+                waypoints[i]= path[i].worldPosition;
+            }
+           
             Array.Reverse(waypoints);
             return waypoints;
         }

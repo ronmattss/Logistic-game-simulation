@@ -668,7 +668,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Button
+  m_text: A*
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -1425,6 +1425,7 @@ GameObject:
   - component: {fileID: 1338841011}
   - component: {fileID: 1338841017}
   - component: {fileID: 1338841016}
+  - component: {fileID: 1338841018}
   m_Layer: 0
   m_Name: AgentObject
   m_TagString: Untagged
@@ -1444,7 +1445,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e45423a1795c91b45a6233aa36dbd961, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  agentRouteManager: {fileID: 0}
+  agentRouteManager: {fileID: 1338841018}
 --- !u!136 &1338841012
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -1566,7 +1567,34 @@ MonoBehaviour:
   cellWaypoints: []
   nodeWaypoints: []
   agent: {fileID: 0}
-  routeIsLooped: 1
+  routeIsLooped: 0
+--- !u!114 &1338841018
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1338841009}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b31d752708a9804cbddbf51d9e01d5f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  currentGridPosition: {x: 0, y: 0, z: 0}
+  currentCellPosition: {fileID: 0}
+  targetCellPosition: {fileID: 0}
+  cellWaypoints: []
+  nodeWaypoints: []
+  aStarWaypoints: []
+  currentNodePosition: {fileID: 0}
+  targetNodePosition: {fileID: 0}
+  routeIsLooped: 0
+  onReceiveRoute:
+    m_PersistentCalls:
+      m_Calls: []
+  OnFinalWaypoint:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &1502124238
 GameObject:
   m_ObjectHideFlags: 0
@@ -1995,7 +2023,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1789625565}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 2094409436}
+        m_TargetAssemblyTypeName: ShadedGames.Scripts.Managers.PathGenerator, Assembly-CSharp
+        m_MethodName: AgentAStarDemo
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1789625565
 MonoBehaviour:
   m_ObjectHideFlags: 0

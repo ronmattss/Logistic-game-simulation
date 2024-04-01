@@ -48,6 +48,10 @@ namespace ShadedGames.Scripts.Managers
 
 
         // BUtton Function
+        public void AgentAStarDemo()
+        {
+            selectedAgent.GetAgentRouteManager().RequestAStarPath();
+        }
 
         public void SetAgentRoute()
         {
