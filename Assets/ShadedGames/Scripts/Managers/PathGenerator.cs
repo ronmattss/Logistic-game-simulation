@@ -52,6 +52,17 @@ namespace ShadedGames.Scripts.Managers
         {
             selectedAgent.GetAgentRouteManager().RequestAStarPath();
         }
+        public void SetAStarRouteToAgent()
+        {
+            // Get the A* generated Nodes in 
+            var localNodeData = selectedAgent.GetAgentRouteManager().GetAStarNodeWaypoints();
+            if( localNodeData.Count > 0 ) 
+            {
+                var newRoute = new GeneratedRoute($"Sample A* Route ({localNodeData.Count})", localNodeData);
+                routes.Add(newRoute);
+                selectedAgent.GetAgentRouteManager().SetNodeWaypoints(routes[0].nodeWaypoint);
+            }
+        }
 
         public void SetAgentRoute()
         {
@@ -77,15 +88,7 @@ namespace ShadedGames.Scripts.Managers
             waypointsToAdd.Capacity = 0;
             currentlySelectedNodes.Capacity = 0;
         }
-        void ClearCurrentlySelectedNodes()
-        {
-            currentlySelectedCell = null;
-            currentlySelectedNode = null;
-            currentlySelectedNodes.Clear();
-            currentlySelectedNodes.Capacity = 0;
 
-
-        }
 
 
 
@@ -109,9 +112,11 @@ namespace ShadedGames.Scripts.Managers
             if (!Mouse3D.Instance.GetMouseState()) return;
 
             mousePosition = Mouse3D.GetMouseWorldPosition();
+
             // Get the Cell Node in the current Cell
             // NOTE: There are TWO WAYS TO DO THIS, CHECK VIA THE POSITION, 
             // OR JUST CHECK THE COLLIDER THE MOUSE IS RETURNING
+
             var checkCell = Mouse3D.GetCellOnMouseWorldPosition();
             switch (currentlySelectedCell)
             {

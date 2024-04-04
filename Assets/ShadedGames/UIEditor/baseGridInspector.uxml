@@ -1,0 +1,8 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <ui:Label tabindex="-1" text="Node Base Grid System" display-tooltip-when-elided="true" />
+    <ui:IntegerField label="Grid Width" value="10" name="grid_width_field" />
+    <ui:IntegerField label="Grid Height" value="10" name="grid_height_field" />
+    <ui:IntegerField label="Grid Cell Size" value="10" name="grid_size_field" />
+    <ui:Button text="Generate  Grid" display-tooltip-when-elided="true" name="generate_grid_button" />
+    <ui:Button text="Remove  Grid" display-tooltip-when-elided="true" name="remove_grid_button" />
+</ui:UXML>

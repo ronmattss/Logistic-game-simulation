@@ -6,6 +6,7 @@ using UnityEngine.Events;
 using ShadedGames.Scripts.Astar;
 using System.IO;
 using ShadedGames.Scripts.Grid_System;
+using System.Drawing;
 
 namespace ShadedGames.Scripts.AgentSystem
 {
@@ -19,6 +20,7 @@ namespace ShadedGames.Scripts.AgentSystem
         [SerializeField] private Vector3 currentGridPosition;
         [SerializeField] private Cell currentCellPosition;
         [SerializeField] private Cell targetCellPosition;
+
         private Queue<Cell> cellWaypointsQueue = new Queue<Cell>(); // this is Set by path finders or routers
         private Queue<Node> currentNodeWaypointsQueue = new Queue<Node>(); // this is Set by path finders or routers
         [SerializeField] private List<Cell> cellWaypoints = new List<Cell>(); // this is Set by path finders or routers
@@ -49,18 +51,31 @@ namespace ShadedGames.Scripts.AgentSystem
         public void OnPathFound(Vector3[] waypoints, bool pathSuccessful)
         {
             Debug.Log($"Waypoints: {waypoints.Length}");
-            if(waypoints !=null)
+            if (waypoints != null)
             {
-                for (int i = 0; i < waypoints.Length; i++)
-                {
-                    Vector3 point = waypoints[i];
-                    // Debug.Log(point);
-                    Instantiate(pathDebugger,GridSystem.Instance.GetGrid().GetCellMidPoint((int)point.x, (int)point.y),Quaternion.identity);
-                    // Convert these points to Nodes
-                }
+
             }
             if (pathSuccessful)
             {
+
+                for (int i = 0; i < waypoints.Length; i++)
+                {
+                    Vector3 point = waypoints[i];
+
+                    int x = Mathf.FloorToInt(point.x / 10);
+                    int z = Mathf.FloorToInt(point.z / 10);
+                    string gameObjectNodeName = $"{x}{z}";
+                    Debug.Log($"Game Object Name: {gameObjectNodeName} RAW Coords: {point.x} {point.z}");
+
+                    Debug.Log($"Node {gameObjectNodeName} exists: {GameObject.Find(gameObjectNodeName) != null} Cell exists: {GridSystem.Instance.GetCellOnGridWithRawCoordinates(x, z)}");
+
+                    // Get the node from the Cell and assign it to the route 
+
+                    var cell = GridSystem.Instance.GetCellOnGridWithRawCoordinates(x, z);
+                    Instantiate(pathDebugger, cell.GetNode().GetWorldPosition(), Quaternion.identity);
+
+                    aStarWaypoints.Add(cell.GetNode());
+                }
 
 
             }
@@ -69,8 +84,37 @@ namespace ShadedGames.Scripts.AgentSystem
                 Debug.Log(this + " No Path");
             }
         }
+        public List<Node> GetAStarNodeWaypoints()
+        {
+            if(aStarWaypoints == null)
+            {
+                Debug.Log("No path Found!"); 
+                return null;
+            }
+            else
+            {
+                return aStarWaypoints;
+            }
+        }
 
+        void GetNodeFromWorldPoint(Vector3 waypoint)
+        {
+           // Vector3 pointMidPoint = GridSystem.Instance.GetGrid().GetNodeMidPointViaWorldPosition((int)waypoint.x, (int)waypoint.z);
+            aStarWaypoints.Add(GridSystem.Instance.GetCellOnGrid((int)waypoint.x,(int)waypoint.z).GetNode());
+        }
 
+        void GetNodeFromWorldPosition(Vector3[] worldPosition)
+        {
+            for(int i = 0;i < worldPosition.Length;i++) 
+            {
+                var cellWaypoints = GridSystem.Instance.GetCellOnGrid(worldPosition[i]);
+                aStarWaypoints.Add(cellWaypoints.GetNode());
+            }
+        }
+        void GetNodeFromGameObject(string gameObjectName)
+        {
+            aStarWaypoints.Add(GameObject.Find(gameObjectName).GetComponent<Cell>().GetNode());
+        }
 
 
 
@@ -150,6 +194,7 @@ namespace ShadedGames.Scripts.AgentSystem
         /// This wraps the function of using Nodes to be used on Movements or Routes. Probably ALso maybe used on Pathfinding
         /// </summary>
         /// <returns></returns>
+        /// TODO: CHECK ISSUES WITH LOOPING
         public Node GetNextRouteNodeWaypoint()
         {
             Debug.Log($"Current Nodes: {currentNodeWaypointsQueue.Count}");
@@ -174,31 +219,7 @@ namespace ShadedGames.Scripts.AgentSystem
 
         #endregion
 
-        // public void MoveToNodeDebug()
-        // {
-        //     // Check available Waypoint Nodes, if 0 then check if it is looping
-        //     if (nodeWaypointsQueue.Count > 0)
-        //     {
-        //         var nextWaypoint = nodeWaypointsQueue.Dequeue();
-        //         nodeWaypoints.Remove(nextWaypoint);
-        //         recentWaypoints.Push(nextWaypoint);
-        //         MoveTo(nextWaypoint);
-        //     }
 
-        //     // IF Route is looped and nodes are empty THEN check 
-        //     if (routeIsLooped && nodeWaypoints.Count == 0)
-        //     {
-        //         SetNodeWaypoints(ReloopRoute());
-        //     }
-        //     else
-        //     {
-        //         Debug.Log("Agent on final Node");
-        //         onWhenInFinalDestination?.Invoke();
-        //     }
-
-        //     isOnDestination = IsOnDestination();
-
-        // }
 
     }
 }

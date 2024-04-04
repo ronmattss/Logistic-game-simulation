@@ -41,6 +41,9 @@ namespace ShadedGames.Scripts.Astar
             // Finding a way how to instantiate THESE
             FieldNode startNode = request.pathStart.GetFieldNode(); // will change THIS
             FieldNode endNode = request.pathEnd.GetFieldNode();
+
+            PathFinderHeap<FieldNode> openSet = new PathFinderHeap<FieldNode>(grid.GetGridSize()); // List for unoptimized version
+            HashSet<FieldNode> closedSet = new HashSet<FieldNode>();
             // TODO: NOW WHAT
             Vector3[] waypoints = new Vector3[0];
             bool pathSuccess = false;
@@ -48,8 +51,7 @@ namespace ShadedGames.Scripts.Astar
             {
 
                 // CHANGE FIELDNODE size to a Variable
-                PathFinderHeap<FieldNode> openSet = new PathFinderHeap<FieldNode>(grid.GetGridSize()); // List for unoptimized version
-                HashSet<FieldNode> closedSet = new HashSet<FieldNode>();
+
 
                 openSet.Add(startNode);
 
@@ -94,34 +96,29 @@ namespace ShadedGames.Scripts.Astar
 
                         }
                     }
-
-                }
-
-
-                // DEBUG TO SHOW THE NODES
-                foreach (var item in closedSet)
-                {
-                    Debug.Log($"Debug closedSet Vectors: {item.worldPosition}");
                 }
             }
 
-
+           
 
             if (pathSuccess)
             {
-                Debug.Log($"Path Success: {endNode}");
-                
-                waypoints = TracePath(startNode, endNode);
-
-                pathSuccess = waypoints.Length > 0;
-
+              waypoints = TracePath(startNode, endNode);
             }
-            Debug.Log($"Waypoints Count on PathFinder: {waypoints.Length}");
+           
+            // TODO: FINAL PATH is in the currentNode.parent
+            
             callback(new PathResult(waypoints, pathSuccess, request.callBack));
             /// TODO: CALLBACK PATHRESULT AND WAYPOINTS AND WHAT WILL BE RETURND
 
         }
 
+        /// <summary>
+        /// THIS IS THE SOLUTION, CurrentNode PARENT
+        /// </summary>
+        /// <param name="startNode"></param>
+        /// <param name="endNode"></param>
+        /// <returns></returns>
         Vector3[] TracePath(FieldNode startNode, FieldNode endNode)
         {
             List<FieldNode> path = new List<FieldNode>();
@@ -134,17 +131,26 @@ namespace ShadedGames.Scripts.Astar
             }
 
             Vector3[] waypoints = new Vector3[path.Count];
+
+
             for (int i = 0; i < path.Count; i++)
             {
+                waypoints[i] = path[i].worldPosition;
+/*
                 Debug.Log($"Waypoint Raw: {waypoints[i]} ");
-                Debug.Log($"Waypoint Midpoint: {GridSystem.Instance.GetGrid().GetCellMidPoint((int)waypoints[i].x, (int)waypoints[i].z)} ");
+                Debug.Log($"Waypoint Midpoint: {waypoints[i].x +5} {waypoints[i].z +5} ");*/
 
-                waypoints[i]= path[i].worldPosition;
             }
            
             Array.Reverse(waypoints);
             return waypoints;
         }
+
+        
+
+
+
+
 
 
         Vector3[] SimplifyPath(List<FieldNode> path)

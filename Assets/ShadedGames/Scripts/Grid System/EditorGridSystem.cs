@@ -12,7 +12,8 @@ namespace ShadedGames.Scripts.Grid_System
     /// <summary>
     /// TODO: Separate Grid System used in Editor and IN GAME
     /// </summary>
-     public class GridSystem : Singleton<GridSystem>
+    [ExecuteInEditMode]
+    public class EditorGridSystem : Singleton<EditorGridSystem>
     {
 
         [SerializeField] private Grid<GridNodeOjbect> grid;  // This is the GRID that will be used by this system
@@ -36,9 +37,9 @@ namespace ShadedGames.Scripts.Grid_System
         {
             return grid.GetGridObject(worldPosition).GetPlacedCell();
         }
-        public  Cell GetCellOnGridWithRawCoordinates(int x ,int y)
+        public Cell GetCellOnGridWithRawCoordinates(int x, int y)
         {
-           
+
             return grid.GetGridObjectWithRawCoordinates(x, y).GetPlacedCell();
         }
         public Cell GetCellOnGrid(int x, int y)
@@ -112,10 +113,10 @@ namespace ShadedGames.Scripts.Grid_System
         }
         void Awake()
         {
-/*            GenerateGrid();
-            PopulateGridWithBlankGameObject();
-            grid.DebugLine();
-            grid.DebugText();*/
+            /*            GenerateGrid();
+                        PopulateGridWithBlankGameObject();
+                        grid.DebugLine();
+                        grid.DebugText();*/
         }
 
         void GenerateGrid()
@@ -132,16 +133,16 @@ namespace ShadedGames.Scripts.Grid_System
 
             for (int i = 0; i < node.GetNodeNeighbors().Length; i++)
             {
-               
+
                 if (node.GetNodeNeighbors()[i] == null)
                 {
-                 //   neighbors.Add(null);
+                    //   neighbors.Add(null);
                 }
                 else
                 {
-                   var nodeNeighbors = node.GetNodeNeighbors()[i];
+                    var nodeNeighbors = node.GetNodeNeighbors()[i];
                     neighbors.Add(nodeNeighbors.GetFieldNode());
-              //  Debug.Log($"Node Direction: {i} World Position: {nodeNeighbors.GetFieldNode().worldPosition}");
+                    //  Debug.Log($"Node Direction: {i} World Position: {nodeNeighbors.GetFieldNode().worldPosition}");
                 }
             }
             return neighbors;
@@ -168,11 +169,6 @@ namespace ShadedGames.Scripts.Grid_System
             Debug.Log($"grid: {parentGridGameObject.transform.childCount}");
         }
 
-
-        private void OnEnable()
-        {
-            DontDestroyOnLoad(gameObject);
-        }
 
         // Update is called once per frame
         void Update()

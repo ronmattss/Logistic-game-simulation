@@ -24,9 +24,9 @@ namespace ShadedGames.Scripts.Managers
             // Generated Route will be fed to the AgentRouteManager
             //
 
-            public GeneratedRoute(string v, List<Node> waypointsToAdd)
+            public GeneratedRoute(string _routeName, List<Node> waypointsToAdd)
             {
-                routeName = v;
+                routeName = _routeName;
                 nodeWaypoint = waypointsToAdd;
             }
         }

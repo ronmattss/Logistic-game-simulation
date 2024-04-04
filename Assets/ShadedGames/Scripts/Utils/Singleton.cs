@@ -50,6 +50,10 @@ namespace ProjectAssets.Scripts.Util
                             DontDestroyOnLoad(singletonObject);
                         }
                     }
+                    else
+                    {
+                        DontDestroyOnLoad(m_Instance);
+                    }
 
                     return m_Instance;
                 }

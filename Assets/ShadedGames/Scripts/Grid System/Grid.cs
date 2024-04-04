@@ -26,6 +26,7 @@ namespace ShadedGames.Scripts.Grid_System
         private float cellSize;
         private Vector3 originPosition;
         private TGridObject[,] gridArray;
+        private GameObject worldTextParent;
 
 
         //Debug
@@ -66,8 +67,9 @@ namespace ShadedGames.Scripts.Grid_System
         }
 
         public void DebugText()
-        {
+        {   worldTextParent = GameObject.Find("DebugWorldTextParent");
             TextMesh[,] debugTextArray = new TextMesh[width, height];
+
             OnGridObjectChanged += (object sender, OnGridObjectChangedEventArgs eventArgs) =>
             {
                 debugTextArray[eventArgs.x, eventArgs.y].text = gridArray[eventArgs.x, eventArgs.y]?.ToString();
@@ -78,9 +80,31 @@ namespace ShadedGames.Scripts.Grid_System
                 {
                     debugTextArray[x, y] = Utility.CreateWorldText(gridArray[x,y]?.ToString(), true, null,
                         GetCellMidPoint(x, y), 30, Color.white, TextAnchor.MiddleCenter);
-                    
+
+                    debugTextArray[x,y].transform.parent = worldTextParent.transform;
                 }
             }
+        }
+
+        public void ClearTGridObjectArray()
+        {
+            if (gridArray == null || gridArray.Length == 0)
+            {
+                Debug.Log("Grid Array is Empty!");
+            }
+            else
+            {
+                Array.Clear(gridArray, 0, gridArray.Length);
+                worldTextParent = GameObject.Find("DebugWorldTextParent");
+                for (int i = 0; i < worldTextParent.transform.childCount; i++)
+                {
+                    GameObject.DestroyImmediate(worldTextParent.transform.GetChild(i).gameObject);
+                }
+            }
+
+
+
+
         }
 
         // position of the cell in world space NOTE THAT THIS WILL BE IN THE Z AXIS
@@ -94,6 +118,10 @@ namespace ShadedGames.Scripts.Grid_System
 
         // Might Change this to a full 3D Grid
         public Vector3 GetWorldPosition(int x, int y) => new Vector3(x, 0, y) * cellSize + originPosition;
+        // This just return the midpoint of the coordinates/ Hard coded FOR NOW, formula probably cell size/2
+        public Vector3 GetNodeMidPointViaWorldPosition(int x, int y) { 
+    return new Vector3(x+5, 0, y+5);
+        }
 
         public Vector3 GetCellMidPoint(int x, int y) =>
             GetWorldPosition(x, y) + new Vector3(cellSize, 0, cellSize) * .5f;
@@ -176,6 +204,12 @@ namespace ShadedGames.Scripts.Grid_System
                 Mathf.Clamp(gridPosition.x, 0, width - 1),
                 Mathf.Clamp(gridPosition.y, 0, height - 1)
             );
+        }
+
+        public TGridObject GetGridObjectWithRawCoordinates(int x,int y)
+        {
+            //Debug.Log($"GridObject Initial Coordinates and results: {x} {y} {GetGridObject(x, y)} {gridArray.Length}");          
+            return GetGridObject(x, y);
         }
 
         // WORLD POSITION TO GRID POSITION

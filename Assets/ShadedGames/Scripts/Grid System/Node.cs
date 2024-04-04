@@ -16,6 +16,7 @@ public class Node : MonoBehaviour
     [SerializeField] private bool isWalkable = true;
 
     public Node[] GetNodeNeighbors() => neigborNodes;
+    public Vector3 GetWorldPosition() => worldPosition;
     public void SetNodeNeighbors(Node neighbor, int nodeIndex)
     {
         if (neighbor == null) return;
@@ -30,6 +31,7 @@ public class Node : MonoBehaviour
     public void InstantiateFieldNode(Vector3 worldPosition, int x, int y, int movementPenalty, bool isPlaceable = true)
     {
         node = new FieldNode(isPlaceable, worldPosition, x, y, 0, this);
+        this.worldPosition = worldPosition;
     }
 
     // Start is called before the first frame update
