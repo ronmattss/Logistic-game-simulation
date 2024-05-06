@@ -65,7 +65,11 @@ namespace ShadedGames.Scripts
 
 
             // register callback
-            button_GenerateNodeGrid.RegisterCallback<MouseUpEvent>(evnt => { EditorGridSystem.Instance.GenerateGridOnEditor();});
+            button_GenerateNodeGrid.RegisterCallback<MouseUpEvent>(evnt => {
+                Debug.Log($"WxH: {integerField_GridWidth.text} {integerField_GridHeight.text}");
+                EditorGridSystem.Instance.SetGridWidthAndHeight(int.Parse(integerField_GridWidth.text), int.Parse(integerField_GridHeight.text));
+                EditorGridSystem.Instance.GenerateGridOnEditor();
+            });
             button_RemoveNodeGrid.RegisterCallback<MouseUpEvent>((evt=> { EditorGridSystem.Instance.RemoveGeneratedGridOnEditor(); }));
 
         }

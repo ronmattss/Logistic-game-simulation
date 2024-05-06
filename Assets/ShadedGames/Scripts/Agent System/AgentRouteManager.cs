@@ -47,7 +47,6 @@ namespace ShadedGames.Scripts.AgentSystem
 
 
         // Request Path With AStar
-
         public void OnPathFound(Vector3[] waypoints, bool pathSuccessful)
         {
             Debug.Log($"Waypoints: {waypoints.Length}");
@@ -57,6 +56,7 @@ namespace ShadedGames.Scripts.AgentSystem
             }
             if (pathSuccessful)
             {
+                //REMOVE PREVIOUS PATH
 
                 for (int i = 0; i < waypoints.Length; i++)
                 {
@@ -163,6 +163,7 @@ namespace ShadedGames.Scripts.AgentSystem
 
 
 
+        // Report to someone that you're in the destination or Final Waypoint
         public bool IsOnFinalWaypoint()
         {
             if (routeIsLooped && currentNodeWaypointsQueue.Count == 0)

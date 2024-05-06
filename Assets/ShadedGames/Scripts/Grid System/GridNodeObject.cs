@@ -38,6 +38,7 @@ namespace ShadedGames.Scripts.Grid_System
         }
         public Cell GetPlacedCell()
         {
+            Debug.Log($"is this cell null:{cell == null}");
             return cell;
         }
         public override string ToString()

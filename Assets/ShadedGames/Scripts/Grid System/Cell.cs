@@ -14,7 +14,8 @@ using UnityEngine;
 /// 
 /// 
 /// It makes more sense to call the node as cell cause you know it's inside a grid system.
-public class Cell : MonoBehaviour
+/*[ExecuteAlways]
+*/public class Cell : MonoBehaviour
 {
     private Vector3 worldPosition;
     [SerializeField] private Node node;
@@ -35,6 +36,17 @@ public class Cell : MonoBehaviour
         neighborObjects[1] = GridSystem.Instance.GetCellOnGrid(x + 1, y); // East
         neighborObjects[2] = GridSystem.Instance.GetCellOnGrid(x, y - 1); // South
         neighborObjects[3] = GridSystem.Instance.GetCellOnGrid(x - 1, y); // West
+        SetNodeNeighbor(); // Set the node Neighbors if it is not null
+        // now Set NodeNeighbors
+    }
+    public void EditorModeSetNeighbor()
+    {
+        int x, y;
+        GridSystem.Instance.GetGrid().GetXZ(worldPosition, out x, out y);
+        neighborObjects[0] = EditorGridSystem.Instance.GetCellOnGrid(x, y + 1); // North
+        neighborObjects[1] = EditorGridSystem.Instance.GetCellOnGrid(x + 1, y); // East
+        neighborObjects[2] = EditorGridSystem.Instance.GetCellOnGrid(x, y - 1); // South
+        neighborObjects[3] = EditorGridSystem.Instance.GetCellOnGrid(x - 1, y); // West
         SetNodeNeighbor(); // Set the node Neighbors if it is not null
         // now Set NodeNeighbors
     }

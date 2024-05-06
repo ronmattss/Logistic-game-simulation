@@ -8,7 +8,7 @@ namespace ShadedGames.Scripts.Astar
     [Serializable]
     public class FieldNode : IHeapItem<FieldNode>
     {
-        public bool isPlaceable;
+        public bool isPath;
         public Vector3 worldPosition;
 
         public int gCost;
@@ -24,7 +24,7 @@ namespace ShadedGames.Scripts.Astar
 
         public FieldNode(bool _isPlaceable, Vector3 _worldPos, int _x, int _y, int _movementPenalty, Node _nodeParent)
         {
-            isPlaceable = _isPlaceable;
+            isPath = _isPlaceable;
             worldPosition = _worldPos;
             gridX = _x;
             gridY = _y;
@@ -34,6 +34,10 @@ namespace ShadedGames.Scripts.Astar
         public FieldNode()
         {
 
+        }
+        public void SetIsPath(bool isPath)
+        {
+            this.isPath = isPath;
         }
 
         public int fCost

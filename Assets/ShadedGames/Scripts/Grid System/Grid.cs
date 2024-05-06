@@ -30,7 +30,12 @@ namespace ShadedGames.Scripts.Grid_System
 
 
         //Debug
+        public TGridObject[,] GetGridArray() => gridArray;
 
+        public void DebugProperties()
+        {
+            Debug.Log($"GRID PROPERTY: WHC {width} {height} {cellSize} OG position: {originPosition} GA: {gridArray.Length}");
+        }
 
         public Grid(int width, int height, float cellSize, Vector3 originPosition,
             Func<Grid<TGridObject>, int, int, TGridObject> createGridObject)
@@ -49,6 +54,24 @@ namespace ShadedGames.Scripts.Grid_System
                     gridArray[x, y] = createGridObject(this, x, y);
                 }
             }
+        }
+        public Grid(int width, int height, float cellSize, Vector3 originPosition,
+    Func<Grid<TGridObject>, int, int, TGridObject> createGridObject, TGridObject[,] tGridObjectArray)
+        {
+            this.width = width;
+            this.height = height;
+            this.cellSize = cellSize;
+            this.originPosition = originPosition;
+
+            gridArray = (TGridObject[,])tGridObjectArray.Clone();
+            Debug.Log($"Modified Grid Array: {gridArray.Length}");
+/*            for (int x = 0; x < gridArray.GetLength(0); x++)
+            {
+                for (int y = 0; y < gridArray.GetLength(1); y++)
+                {
+                    gridArray[x, y] = createGridObject(this, x, y);
+                }
+            }*/
         }
 
         public void DebugLine()
@@ -129,6 +152,7 @@ namespace ShadedGames.Scripts.Grid_System
         // Get the X Y value of the cell via WorldPosition
         public void GetXY(Vector3 worldPosition, out int x, out int y)
         {
+            Debug.Log($"cellSize {cellSize}");
             x = Mathf.FloorToInt((worldPosition - originPosition).x / cellSize);
             y = Mathf.FloorToInt((worldPosition - originPosition).y / cellSize);
         }
@@ -196,6 +220,9 @@ namespace ShadedGames.Scripts.Grid_System
         {
             int x, y;
             GetXY(worldPosition, out x, out y);
+            Debug.Log($"TGObject: ${x} {y}");
+            Debug.Log($"TGridLength:{gridArray.Length}");
+
             return GetGridObject(x, y);
         }
         

@@ -24,16 +24,43 @@ namespace ShadedGames.Scripts.Grid_System
         [SerializeField] private float cellSize = 10f;
         [SerializeField] private List<GameObject> generatedObjects = new List<GameObject>();
         [SerializeField] private List<Cell> cellGrid = new List<Cell>();
+        [SerializeField] private List<Cell> tempCellGrid = new List<Cell>();
+
         [SerializeField] private GameObject parentGridGameObject;
+        [SerializeField] private StoredCells generalGridData;
 
 
         public Grid<GridNodeOjbect> GetGrid() => grid;
         public int GetGridSize() => width * height;
         public List<Cell> GetCellGrid() => cellGrid;
 
+        void Awake()
+        {
+            /*           
+                      
+                        grid.DebugLine();
+                        grid.DebugText();*/
+
+            // On Awake Get Data from EditorGridObject
+
+            GenerateGrid();
+            PopulateGridWithBlankGameObject();
+            // Clean up The Grid
+
+/*            grid = generalGridData.grid;
+            cellGrid = new List<Cell>(generalGridData.cellGrid);
+            cellGrid.RemoveAll(cell => cell == null);
+            grid.DebugProperties();
+            //Debug.Log($"Grid {grid == null} GridOnCell {cellGrid.Count} grid width: {grid.GetWidth()}");
+            Debug.Log($"is Grid null?: {grid == null}");*/
+
+
+        }
+
 
         public Cell GetCellOnGrid(Vector3 worldPosition)
         {
+            Debug.Log($"Vector Start: {worldPosition}");
             return grid.GetGridObject(worldPosition).GetPlacedCell();
         }
         public  Cell GetCellOnGridWithRawCoordinates(int x ,int y)
@@ -69,7 +96,7 @@ namespace ShadedGames.Scripts.Grid_System
             }
         }
 
-
+        // MODIFY TO accomodate 
         private void PlaceBlankCellGameObject(int x, int y)
         {
             var placedCell = Instantiate(blankCellPrefab, grid.GetCellMidPoint(x, y), Quaternion.identity);
@@ -87,15 +114,39 @@ namespace ShadedGames.Scripts.Grid_System
             currentCell.SetWorldPosition(grid.GetWorldPosition(x, y));
 
             currentCell.GetNode().InstantiateFieldNode(grid.GetCellMidPoint(x, y), x, y, 0); // Instantiate Field Node for A* // Changed World Position to MID POINT
-
+            currentCell.GetNode().SetParentCell(currentCell);
             var currentGridObject = grid.GetGridObject(x, y);
 
-            currentGridObject.SetPlacedCell(currentCell);
+            currentGridObject.SetPlacedCell(currentCell); // assign this CELL to the GRIDObject Cell
 
             currentGridObject.SetPlacedCellPrefab(placedCell);
-            cellGrid.Add(currentCell);
+
+            //tempCellGrid.Add(currentCell);
+            // Remove All Nodes that are not Blocked Or Path
+
+          
 
         }
+
+        void CleanUpGrid()
+        {
+            for (int i = 0; i < tempCellGrid.Count; i++)
+            {
+                Cell cell = tempCellGrid[i];
+                if (cell.GetNode().RemoveGameObjectIfUnused())
+                {
+                    cellGrid.Add(cell);
+                }
+                else
+                {
+                    tempCellGrid.Remove(cell);
+                    Destroy(cell.gameObject);
+                }
+            }
+
+        }
+
+        
 
         // Populate Grid with Cell GameObjects
         private void PopulateGridWithBlankGameObject()
@@ -110,16 +161,12 @@ namespace ShadedGames.Scripts.Grid_System
 
             SetCellNeighbors();
         }
-        void Awake()
-        {
-/*            GenerateGrid();
-            PopulateGridWithBlankGameObject();
-            grid.DebugLine();
-            grid.DebugText();*/
-        }
+
 
         void GenerateGrid()
         {
+/*            //grid = EditorGridSystem.Instance.GetGrid();
+            Debug.Log($"is the Origin Grid Array Null? {EditorGridSystem.Instance.GetGrid().GetGridArray() == null}");*/
             grid = new Grid<GridNodeOjbect>(width, height, cellSize, Vector3.zero,
                 (Grid<GridNodeOjbect> g, int x, int y) => new GridNodeOjbect(g, x, y));
 

@@ -52,7 +52,7 @@ namespace ProjectAssets.Scripts.Util
                     }
                     else
                     {
-                        DontDestroyOnLoad(m_Instance);
+                     //   DontDestroyOnLoad(m_Instance);
                     }
 
                     return m_Instance;

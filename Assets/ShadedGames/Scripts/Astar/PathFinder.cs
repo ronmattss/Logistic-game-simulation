@@ -47,7 +47,7 @@ namespace ShadedGames.Scripts.Astar
             // TODO: NOW WHAT
             Vector3[] waypoints = new Vector3[0];
             bool pathSuccess = false;
-            if (startNode.isPlaceable && endNode.isPlaceable)
+            if (startNode.isPath && endNode.isPath)
             {
 
                 // CHANGE FIELDNODE size to a Variable
@@ -73,7 +73,7 @@ namespace ShadedGames.Scripts.Astar
                     foreach (FieldNode neighbor in grid.GetNeighbors(currentNode.nodeParent))
                     {
                         Debug.Log("Calculating Neighbors");
-                        if (!neighbor.isPlaceable || closedSet.Contains(neighbor))
+                        if (!neighbor.isPath || closedSet.Contains(neighbor))
                         {
                             continue;
                         }
