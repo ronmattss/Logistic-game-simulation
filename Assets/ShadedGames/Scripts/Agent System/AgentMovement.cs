@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using ShadedGames.Scripts.Grid_System;
 using UnityEngine;
+using UnityEngine.AI;
 using UnityEngine.Events;
 
 
@@ -27,7 +28,7 @@ namespace ShadedGames.Scripts.AgentSystem
         [SerializeField] private List<Node> nodeWaypoints = new List<Node>(); // this is Set by path finders or routers
         [SerializeField] private Stack<Node> recentWaypoints = new Stack<Node>(); // Stores recent Route, if route is looped, Pop to nodeWayPoints
         private int currentSpeed = 1;
-        private bool isOnDestination = false;
+       [SerializeField] private bool isOnDestination = false;
 
 
 
@@ -37,12 +38,16 @@ namespace ShadedGames.Scripts.AgentSystem
 
         // DEBUG ZONE;
         [SerializeField] Agent agent;
+        [SerializeField] private NavMeshAgent meshAgent;
+
         [SerializeField] bool routeIsLooped = true;
         private int debugCurrentSpeed = 1;
         private float tickRate = 1;
-        private float timer = 0f;
+        private float timer = 0.25f; // update Movement info every .25f seconds
         // FOR MOVEMENT, should we use nav mesh OR just node paths?
         // for simplicity we gonna just use the most basic one.
+        public void SetCurrentNodePosition(Node node) => currentNodePosition = node;
+        public void SetTargetNodePosition(Node node) => targetNodePosition = node;
 
 
         void Awake()
@@ -59,13 +64,6 @@ namespace ShadedGames.Scripts.AgentSystem
         public Vector3 GetCurrentGridPosition() => currentGridPosition;
         public void SetCurrentAgentGridPosition(Vector3 gridPosition) => currentGridPosition = gridPosition;
 
-        void SetCurrentCellPosition()
-        {
-            currentGridPosition = new Vector3(this.transform.position.x, this.transform.position.y, this.transform.position.z);
-
-            currentCellPosition = GridSystem.Instance.GetCellOnGrid(currentGridPosition);
-            //    currentNodePosition = GridSystem.Instance.GetCellOnGrid(currentGridPosition).GetNode();
-        }
 
         void SetGridPosition()
         {
@@ -74,75 +72,93 @@ namespace ShadedGames.Scripts.AgentSystem
         }
 
 
-        public void MoveToCellDebug()
-        {
-
-            if (cellWaypointsQueue.Count > 0)
-            {
-                var nextWaypoint = cellWaypointsQueue.Dequeue();
-                cellWaypoints.Remove(nextWaypoint);
-                MoveTo(nextWaypoint);
-            }
-            else
-            {
-                Debug.Log("Agent on final Cell");
-            }
-        }
 
         // This directs the Agent on where to go
         // The brain of the script basically
         // Waypoints should be editable, in case you need to go somewhere
 
-        // DO NOT CALL THIS IF YOU ARE NOT IN MOVING STATE
-        public void MoveToNextWaypointDebug()
+
+
+
+
+
+
+        // Using Navmesh Agent Move To Waypoint
+        // If tehre are multiple waypoints, Check if agent is near the waypoint
+        // if it is change the waypoint to the Next one.
+        public void MoveToWaypoint() 
         {
             var waypoint = agent.GetAgentRouteManager().GetNextRouteNodeWaypoint();
-
-            if (waypoint != null)
+            if ( waypoint != null)
             {
-                MoveTo(waypoint);
+                meshAgent.Move(waypoint.transform.position);
                 isOnDestination = false;
             }
-            else
-            {
-                Debug.Log("Agent on final Node");
-                isOnDestination = true;
-                agent.GetAgentRouteManager().OnFinalWaypoint.Invoke(); //  This still does not make any sense to invoke this here
-
-            }
-
-        }
-
-
-
-
-        // This is debug Move Cell moving
-        // THIS IS WHERE THE MOVING HAPPENS
-        public void MoveTo(Cell cell)
-        {
-            currentCellPosition = cell;
-            this.transform.position = new Vector3(currentCellPosition.transform.position.x, 1, currentCellPosition.transform.position.z);
-        }
-        public void MoveTo(Node node)
-        {
-            currentNodePosition = node;
-            this.transform.position = new Vector3(currentNodePosition.transform.position.x, 1, currentNodePosition.transform.position.z);
         }
 
 
 
 
 
-        // Get the current Cell position from the GridSystem
-        public void SetGridCellPosition()
-        {
-
-        }
 
 
         private void FixedUpdate()
         {
             //DebugMoveUpdate();
+        }
+
+
+
+
+        public void MoveToFirstWaypoint()
+        {
+            meshAgent.speed =6;
+            if(agent.GetAgentRouteManager().CheckIfThereAreWaypointsAvailable())
+            {
+                currentNodePosition = agent.GetAgentRouteManager().GetNextRouteNodeWaypoint();
+                Debug.Log($"Moving to First Node: {currentNodePosition.transform.position}");
+                isOnDestination = false;
+                meshAgent.isStopped = false;
+                meshAgent.SetDestination(currentNodePosition.transform.position);
+
+            }
+            else
+            {
+                Debug.Log("First Waypoint is Last Waypoint");
+                isOnDestination = true;
+            }
+        }
+
+        // Will be Called on AgentStateMovement
+        public void MovementUpdate()
+        {            
+           
+
+            if(currentNodePosition != null)
+            {
+                Debug.Log($"is current Node Position null: {currentNodePosition == null} Distance: {Vector3.Distance(currentNodePosition.transform.position, this.transform.position)}");
+                if (Vector3.Distance(currentNodePosition.transform.position, this.transform.position) <= 4f) // Now this should trigger when changing Waypoints
+                {
+
+                    currentNodePosition = agent.GetAgentRouteManager().GetNextRouteNodeWaypoint();
+                    meshAgent.SetDestination(currentNodePosition.transform.position);
+                    Debug.Log($"Moving to Node: {currentNodePosition.transform.position}");
+                    isOnDestination = false;
+
+                }
+                else
+                {
+/*                    Debug.Log("Wrong Move Command");
+                    meshAgent.Move(currentNodePosition.transform.position);*/
+                }
+
+            }
+            else // supposedly the Agent is in the Destination
+            {
+                meshAgent.isStopped = true;
+                isOnDestination = true;
+            }    
+
         }
 
         public void DebugMoveUpdate()
@@ -152,9 +168,8 @@ namespace ShadedGames.Scripts.AgentSystem
             if (timer >= tickRate)
             {
                 Debug.Log("1 second Tick");
-                // MoveToCellDebug();
-                // MoveToNodeDebug();
-                MoveToNextWaypointDebug();
+
+                MovementUpdate();
                 timer = 0;
             }
         }

@@ -5,7 +5,8 @@ using UnityEngine;
 
 namespace ShadedGames.Scripts.StateMachine
 {
-    public class StateMachine
+    [CreateAssetMenu(fileName = "FSM State", menuName = "FSM Scriptable Objects/FSM State", order = 1)]
+    public class StateMachine: ScriptableObject
     {
         // STATES enum  SHOULD BE ON Present Form
         public enum CurrentState
@@ -24,7 +25,7 @@ namespace ShadedGames.Scripts.StateMachine
         protected StateProcess stateStatus;
         protected GameObject agentGameObject;
         protected Agent agent;
-        protected StateMachine nextState; // What if there are pool of states?
+        public StateMachine nextState; // What if there are pool of states?
         // STFU WITH DYNAMIC TRANSITIONS AND PLUGGABLE FSM FOR NOW
 
         public StateMachine(Agent _agent, GameObject _agentGameObject)
@@ -74,5 +75,7 @@ namespace ShadedGames.Scripts.StateMachine
         // STATE TRANSITIONS CAN BE MANIPULATED BY THE TASKS, 
 
     }
+
+
 
 }

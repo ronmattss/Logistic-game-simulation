@@ -7,24 +7,30 @@ using UnityEngine;
 namespace ShadedGames.Scripts.StateMachine
 {
 
-/// <summary>
-/// Nothing much to see here
-/// </summary>
-    public class StateMachineDriver : MonoBehaviour
+    /// <summary>
+    /// Nothing much to see here
+    /// </summary>
+    public abstract class StateMachineDriver : MonoBehaviour
     {
-        // Start is called before the first frame update
+        public BaseState initialState;
+        private BaseState currentState;
 
-        protected StateMachine baseState; 
-         public virtual void Awake()
+        protected virtual void Awake()
         {
-            // What we can do is create State classes for each agents
-           // baseState = new AgentStateIdle(this.gameObject.GetComponent<Agent>(), this.gameObject);
+            currentState = initialState;
+            currentState.Enter();
         }
 
-        // Update is called once per frame
-        public virtual void  Update()
+        protected virtual void Update()
         {
-            baseState = baseState.Process();
+            currentState.Process(this);
+        }
+
+        public void ChangeState(BaseState newState)
+        {
+            currentState.Exit();
+            currentState = newState;
+            currentState.Enter();
         }
     }
 

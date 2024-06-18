@@ -77,7 +77,7 @@ namespace ShadedGames.Scripts.Grid_System
 
         public Cell GetCellOnGrid(float x, float z)
         {
-
+            
             if (!grid.ValidateCoordinates((int)math.floor(x), (int)math.floor(z))) return null;
             return grid.GetGridObject(new Vector3(x, 0, z)).GetPlacedCell();
 
@@ -125,24 +125,6 @@ namespace ShadedGames.Scripts.Grid_System
             // Remove All Nodes that are not Blocked Or Path
 
           
-
-        }
-
-        void CleanUpGrid()
-        {
-            for (int i = 0; i < tempCellGrid.Count; i++)
-            {
-                Cell cell = tempCellGrid[i];
-                if (cell.GetNode().RemoveGameObjectIfUnused())
-                {
-                    cellGrid.Add(cell);
-                }
-                else
-                {
-                    tempCellGrid.Remove(cell);
-                    Destroy(cell.gameObject);
-                }
-            }
 
         }
 

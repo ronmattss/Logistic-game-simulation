@@ -38,7 +38,8 @@ namespace ShadedGames.Scripts.AgentSystem
         // Debug
         public GameObject pathDebugger;
 
-
+        public void SetCurrentNodePosition(Node node) => currentNodePosition = node;
+        public void SetTargetNodePosition(Node node) => targetNodePosition = node;
         public void RequestAStarPath()
         {
             PathRequestManager.Instance.RequestPath(new PathRequest(currentNodePosition, targetNodePosition, OnPathFound)); // TODO:: THIS
@@ -97,24 +98,16 @@ namespace ShadedGames.Scripts.AgentSystem
             }
         }
 
-        void GetNodeFromWorldPoint(Vector3 waypoint)
+        public void ClearAStarNodeWaypoints()
         {
-           // Vector3 pointMidPoint = GridSystem.Instance.GetGrid().GetNodeMidPointViaWorldPosition((int)waypoint.x, (int)waypoint.z);
-            aStarWaypoints.Add(GridSystem.Instance.GetCellOnGrid((int)waypoint.x,(int)waypoint.z).GetNode());
+            aStarWaypoints.Clear();
+            aStarWaypoints.Capacity = 0; // might be buggy
         }
 
-        void GetNodeFromWorldPosition(Vector3[] worldPosition)
-        {
-            for(int i = 0;i < worldPosition.Length;i++) 
-            {
-                var cellWaypoints = GridSystem.Instance.GetCellOnGrid(worldPosition[i]);
-                aStarWaypoints.Add(cellWaypoints.GetNode());
-            }
-        }
-        void GetNodeFromGameObject(string gameObjectName)
-        {
-            aStarWaypoints.Add(GameObject.Find(gameObjectName).GetComponent<Cell>().GetNode());
-        }
+        /// <summary>
+        /// Check If Node Turn
+        /// </summary>
+        /// <param name="waypointNodes"></param>
 
 
 
@@ -216,6 +209,11 @@ namespace ShadedGames.Scripts.AgentSystem
 
                 return null;
             }
+        }
+
+        public bool CheckIfThereAreWaypointsAvailable()
+        {
+            return currentNodeWaypointsQueue.Count > 0;
         }
 
         #endregion

@@ -1,6 +1,7 @@
 
 
 using ShadedGames.Scripts.AgentSystem;
+using ShadedGames.Scripts.Grid_System;
 using UnityEngine;
 
 namespace ShadedGames.Scripts.StateMachine.AgentStates
@@ -20,6 +21,14 @@ namespace ShadedGames.Scripts.StateMachine.AgentStates
         public override void Enter()
         {
             base.Enter();
+            Debug.Log($"Agent Node Position: {agent.gameObject.transform.position} {Mathf.Floor(agent.gameObject.transform.position.x / 10) } {Mathf.Floor(agent.gameObject.transform.position.z / 10)}");
+            var currentNode = GridSystem.Instance.GetCellOnGridWithRawCoordinates((int)Mathf.Floor(agent.gameObject.transform.position.x / 10), (int)Mathf.Floor(agent.gameObject.transform.position.z / 10));
+            Debug.Log($"is current Node null: {currentNode == null}");
+            if(currentNode != null)
+            {
+                agentMovement.SetCurrentNodePosition(currentNode.GetNode());
+                agent.GetAgentRouteManager().SetCurrentNodePosition(currentNode.GetNode());
+            }
         }
 
         public override void Update()

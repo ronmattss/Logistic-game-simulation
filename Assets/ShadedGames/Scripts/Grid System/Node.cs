@@ -72,11 +72,11 @@ public class Node : MonoBehaviour
         }
         else if(other.CompareTag("Path"))
         {
-            Debug.Log("Walkable Path");
-            Debug.Log($"PATH Collission: {other.gameObject.transform.name}");
+           // Debug.Log("Walkable Path");
+          //  Debug.Log($"PATH Collission: {other.gameObject.transform.name}");
             isPathWalkable = true;
             this.GetComponent<Collider>().enabled = false;
-            other.GetComponent<Collider>().enabled = false;
+          //  other.GetComponent<Collider>().enabled = false;
             node.SetIsPath(isPathWalkable);
         }
     }

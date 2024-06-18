@@ -17,6 +17,7 @@ namespace ShadedGames.Scripts.StateMachine.AgentStates
         public override void Enter()
         {
             base.Enter();
+            agentMovement.MoveToFirstWaypoint();
             // Move to 
         }
 
