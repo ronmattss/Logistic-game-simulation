@@ -4,7 +4,7 @@ namespace ShadedGames.Scripts.StateMachine
 {
     public abstract class BaseAction : ScriptableObject, IAction
     {
-        public abstract void Execute();
+        public abstract void Execute(StateMachineDriver driver);
     }
 
 

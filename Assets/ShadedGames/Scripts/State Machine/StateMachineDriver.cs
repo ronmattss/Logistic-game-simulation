@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using ShadedGames.Scripts.AgentSystem;
-using ShadedGames.Scripts.StateMachine.AgentStates;
 using UnityEngine;
 
 namespace ShadedGames.Scripts.StateMachine
@@ -18,7 +17,7 @@ namespace ShadedGames.Scripts.StateMachine
         protected virtual void Awake()
         {
             currentState = initialState;
-            currentState.Enter();
+            currentState.Enter(this);
         }
 
         protected virtual void Update()
@@ -28,9 +27,9 @@ namespace ShadedGames.Scripts.StateMachine
 
         public void ChangeState(BaseState newState)
         {
-            currentState.Exit();
+            currentState.Exit(this);
             currentState = newState;
-            currentState.Enter();
+            currentState.Enter(this);
         }
     }
 

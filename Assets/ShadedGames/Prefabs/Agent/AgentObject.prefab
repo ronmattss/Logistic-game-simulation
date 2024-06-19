@@ -14,7 +14,6 @@ GameObject:
   - component: {fileID: 269785558064030200}
   - component: {fileID: 5403901546189641525}
   - component: {fileID: 8224776486664548018}
-  - component: {fileID: 7237618291563790544}
   - component: {fileID: 9025322292867814303}
   m_Layer: 0
   m_Name: AgentObject
@@ -143,21 +142,10 @@ MonoBehaviour:
   targetNodePosition: {fileID: 0}
   cellWaypoints: []
   nodeWaypoints: []
+  isOnDestination: 0
   agent: {fileID: 0}
+  meshAgent: {fileID: 0}
   routeIsLooped: 0
---- !u!114 &7237618291563790544
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 897608210188199072}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e300bb76217d33a43ba790ceed7d43e2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  loopCurrentRoute: 0
 --- !u!114 &9025322292867814303
 MonoBehaviour:
   m_ObjectHideFlags: 0

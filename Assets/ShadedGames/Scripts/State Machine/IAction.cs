@@ -2,7 +2,7 @@
 {
     public interface IAction
     {
-        void Execute();
+        void Execute(StateMachineDriver driver);
     }
 
 

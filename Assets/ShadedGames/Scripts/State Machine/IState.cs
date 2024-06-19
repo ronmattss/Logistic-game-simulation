@@ -2,9 +2,9 @@
 {
     public interface IState
     {
-        void Enter();
+        void Enter(StateMachineDriver driver);
         void Process(StateMachineDriver driver);
-        void Exit();
+        void Exit(StateMachineDriver driver);
     }
 
 

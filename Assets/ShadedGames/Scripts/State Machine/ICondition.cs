@@ -2,7 +2,7 @@
 {
     public interface ICondition
     {
-        bool Evaluate();
+        bool Evaluate(StateMachineDriver driver);
     }
 
 
