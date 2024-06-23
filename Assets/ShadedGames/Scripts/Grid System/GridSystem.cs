@@ -90,7 +90,7 @@ namespace ShadedGames.Scripts.Grid_System
             {
                 for (int y = 0; y < grid.GetHeight(); y++)
                 {
-                    Debug.Log(GetCellOnGrid(x, y).transform.name);
+                //    Debug.Log(GetCellOnGrid(x, y).transform.name);
                     GetCellOnGrid(x, y).SetNeighbor();
                 }
             }

@@ -41,7 +41,7 @@ public class Node : MonoBehaviour
 
     public void InstantiateFieldNode(Vector3 worldPosition, int x, int y, int movementPenalty, bool isPlaceable = true)
     {
-        Debug.Log("Init Field Node");
+       // Debug.Log("Init Field Node");
         node = new FieldNode(isPathWalkable, worldPosition, x, y, 0, this);
         this.worldPosition = worldPosition;
     }

@@ -27,12 +27,16 @@ namespace ShadedGames.Scripts.AgentSystem
         [SerializeField] private List<Cell> cellWaypoints = new List<Cell>(); // this is Set by path finders or routers
         [SerializeField] private List<Node> nodeWaypoints = new List<Node>(); // this is Set by path finders or routers
         [SerializeField] private Stack<Node> recentWaypoints = new Stack<Node>(); // Stores recent Route, if route is looped, Pop to nodeWayPoints
-        private int currentSpeed = 1;
-       [SerializeField] private bool isOnDestination = false;
+        [SerializeField] private int currentSpeed = 6;
+        [SerializeField] private int distanceToNodeCheck = 4;
+        [SerializeField] private bool isOnDestination = false;
 
 
+        // for simplicity we gonna just use the most basic one.
+        public void SetCurrentNodePosition(Node node) => currentNodePosition = node;
+        public void SetTargetNodePosition(Node node) => targetNodePosition = node;
 
-
+        public bool GetIsOnDestination() =>  isOnDestination;
 
 
 
@@ -45,9 +49,7 @@ namespace ShadedGames.Scripts.AgentSystem
         private float tickRate = 1;
         private float timer = 0.25f; // update Movement info every .25f seconds
         // FOR MOVEMENT, should we use nav mesh OR just node paths?
-        // for simplicity we gonna just use the most basic one.
-        public void SetCurrentNodePosition(Node node) => currentNodePosition = node;
-        public void SetTargetNodePosition(Node node) => targetNodePosition = node;
+
 
 
         void Awake()
@@ -58,7 +60,7 @@ namespace ShadedGames.Scripts.AgentSystem
             SetGridPosition();
         }
 
-        public bool GetIsOnDestination() => agent.GetAgentRouteManager().IsOnFinalWaypoint();
+       /* public bool GetIsOnDestination() => agent.GetAgentRouteManager().IsOnFinalWaypoint();*/
 
 
         public Vector3 GetCurrentGridPosition() => currentGridPosition;
@@ -112,11 +114,12 @@ namespace ShadedGames.Scripts.AgentSystem
 
         public void MoveToFirstWaypoint()
         {
-            meshAgent.speed =6;
+            meshAgent.speed = currentSpeed;
             if(agent.GetAgentRouteManager().CheckIfThereAreWaypointsAvailable())
             {
                 currentNodePosition = agent.GetAgentRouteManager().GetNextRouteNodeWaypoint();
                 Debug.Log($"Moving to First Node: {currentNodePosition.transform.position}");
+                agent.GetAgentRouteManager().SetPathFound(false);
                 isOnDestination = false;
                 meshAgent.isStopped = false;
                 meshAgent.SetDestination(currentNodePosition.transform.position);
@@ -134,30 +137,24 @@ namespace ShadedGames.Scripts.AgentSystem
         {            
            
 
-            if(currentNodePosition != null)
-            {
-                Debug.Log($"is current Node Position null: {currentNodePosition == null} Distance: {Vector3.Distance(currentNodePosition.transform.position, this.transform.position)}");
-                if (Vector3.Distance(currentNodePosition.transform.position, this.transform.position) <= 4f) // Now this should trigger when changing Waypoints
+              //  Debug.Log($"is current Node Position null: {currentNodePosition == null} Distance: {Vector3.Distance(currentNodePosition.transform.position, this.transform.position)}");
+                if (currentNodePosition != null && Vector3.Distance(currentNodePosition.transform.position, this.transform.position) <= distanceToNodeCheck) // Now this should trigger when changing Waypoints
                 {
-
-                    currentNodePosition = agent.GetAgentRouteManager().GetNextRouteNodeWaypoint();
-                    meshAgent.SetDestination(currentNodePosition.transform.position);
-                    Debug.Log($"Moving to Node: {currentNodePosition.transform.position}");
-                    isOnDestination = false;
-
+                    if(agent.GetAgentRouteManager().GetNextRouteNodeWaypoint() != null)
+                    {
+                        currentNodePosition = agent.GetAgentRouteManager().GetNextRouteNodeWaypoint();
+                        // This gives an error if Current  node position is null lmao
+                        meshAgent.SetDestination(currentNodePosition.transform.position);
+                        Debug.Log($"Moving to Node: {currentNodePosition.transform.position}");
+                        isOnDestination = false;
+                    }
+                    else
+                    {
+                        meshAgent.isStopped = true;
+                        isOnDestination = true;
+                    }
                 }
-                else
-                {
-/*                    Debug.Log("Wrong Move Command");
-                    meshAgent.Move(currentNodePosition.transform.position);*/
-                }
-
-            }
-            else // supposedly the Agent is in the Destination
-            {
-                meshAgent.isStopped = true;
-                isOnDestination = true;
-            }    
+  
 
         }
 

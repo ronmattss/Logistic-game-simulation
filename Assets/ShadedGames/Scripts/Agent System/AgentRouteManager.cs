@@ -33,6 +33,7 @@ namespace ShadedGames.Scripts.AgentSystem
         // Create Route Class
 
         [SerializeField] bool routeIsLooped = false; // THIS SHOULD BE CHANGED FROM THE ROUTE GENERATION CLASS, MAKE IT LATER AFTER TESTING
+        [SerializeField] bool pathFound = false;
         public UnityEvent onReceiveRoute;
         public UnityEvent OnFinalWaypoint;
         // Debug
@@ -40,6 +41,12 @@ namespace ShadedGames.Scripts.AgentSystem
 
         public void SetCurrentNodePosition(Node node) => currentNodePosition = node;
         public void SetTargetNodePosition(Node node) => targetNodePosition = node;
+
+        public bool GetPathFound() => pathFound;
+        public void SetPathFound( bool isFound)
+        {
+            pathFound = isFound;
+        }
         public void RequestAStarPath()
         {
             PathRequestManager.Instance.RequestPath(new PathRequest(currentNodePosition, targetNodePosition, OnPathFound)); // TODO:: THIS
@@ -73,12 +80,11 @@ namespace ShadedGames.Scripts.AgentSystem
                     // Get the node from the Cell and assign it to the route 
 
                     var cell = GridSystem.Instance.GetCellOnGridWithRawCoordinates(x, z);
-                    Instantiate(pathDebugger, cell.GetNode().GetWorldPosition(), Quaternion.identity);
-
+                 //   Instantiate(pathDebugger, cell.GetNode().GetWorldPosition(), Quaternion.identity);
                     aStarWaypoints.Add(cell.GetNode());
                 }
 
-
+                pathFound = true;
             }
             else
             {

@@ -13,7 +13,8 @@ namespace ShadedGames.Scripts.StateMachine
     {
         public BaseState initialState;
         private BaseState currentState;
-
+        [SerializeField] private string currentStateName;
+        public void SetStateName(string currentState) => currentStateName = currentState;
         protected virtual void Awake()
         {
             currentState = initialState;
@@ -30,6 +31,11 @@ namespace ShadedGames.Scripts.StateMachine
             currentState.Exit(this);
             currentState = newState;
             currentState.Enter(this);
+        }
+        public void DisplayCurrentState()
+        {
+            SetStateName(currentState.name);
+            Debug.Log($"Current State: {currentStateName}");
         }
     }
 

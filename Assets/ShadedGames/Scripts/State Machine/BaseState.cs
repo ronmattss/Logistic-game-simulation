@@ -11,76 +11,64 @@ namespace ShadedGames.Scripts.StateMachine
         public List<BaseAction> exitActions;    // actions performed when exiting a state
         public List<ActionTransition> actionTransitions; // actions performed depending on the condition, prioritized
         public List<Transition> transitions;             // these are conditions to go to the next state.
-
+        
         public virtual void Enter(StateMachineDriver driver)
         {
-            if (entryActions == null || entryActions.Count == 0)
+            driver.DisplayCurrentState();
+            if (entryActions != null && entryActions.Count != 0)
             {
-                return;
-            }
-
-            foreach (var action in entryActions)
-            {
-                action.Execute(driver);
+                foreach (var action in entryActions)
+                {
+                    action.Execute(driver);
+                }
             }
         }
 
         public virtual void Process(StateMachineDriver driver)
         {
-            if (actionTransitions == null || actionTransitions.Count == 0)
+            if (actionTransitions != null && actionTransitions.Count != 0)
             {
-                return;
-            }
-
-            foreach (var actionCondition in actionTransitions)
-            {
-               if(actionCondition.condition.Evaluate(driver))
+                foreach (var actionCondition in actionTransitions)
                 {
-                    actionCondition.trueAction.Execute(driver);
-                }
-               else
-                {
-                    actionCondition.falseAction.Execute(driver);
+                    if (actionCondition.condition.Evaluate(driver))
+                    {
+                        actionCondition.trueAction.Execute(driver);
+                    }
+                    else
+                    {
+                        actionCondition.falseAction.Execute(driver);
+                    }
                 }
             }
 
-
-
-            if (updateActions == null || updateActions.Count == 0)
+            if (updateActions != null && updateActions.Count != 0)
             {
-                return;
-            }
-
-            foreach (var action in updateActions)
-            {
-                action.Execute(driver);
-            }
-
-            if (transitions == null || transitions.Count == 0)
-            {
-                return;
-            }
-
-            foreach (var transition in transitions)
-            {
-                if (transition.condition.Evaluate(driver))
+                foreach (var action in updateActions)
                 {
-                    driver.ChangeState(transition.nextState);
-                    break;
+                    action.Execute(driver);
+                }
+            }
+            if (transitions != null && transitions.Count != 0)
+            {
+                foreach (var transition in transitions)
+                {
+                    if (transition.condition.Evaluate(driver))
+                    {
+                        driver.ChangeState(transition.nextState);
+                        break;
+                    }
                 }
             }
         }
 
         public virtual void Exit(StateMachineDriver driver)
         {
-            if (exitActions == null || exitActions.Count == 0)
+            if (exitActions != null && exitActions.Count != 0)
             {
-                return;
-            }
-
-            foreach (var action in exitActions)
-            {
-                action.Execute(driver);
+                foreach (var action in exitActions)
+                {
+                    action.Execute(driver);
+                }
             }
         }
     }
