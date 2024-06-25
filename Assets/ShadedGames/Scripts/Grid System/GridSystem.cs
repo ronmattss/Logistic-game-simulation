@@ -36,27 +36,18 @@ namespace ShadedGames.Scripts.Grid_System
 
         void Awake()
         {
-            /*           
-                      
-                        grid.DebugLine();
-                        grid.DebugText();*/
-
-            // On Awake Get Data from EditorGridObject
-
             GenerateGrid();
             PopulateGridWithBlankGameObject();
-            // Clean up The Grid
-
-/*            grid = generalGridData.grid;
-            cellGrid = new List<Cell>(generalGridData.cellGrid);
-            cellGrid.RemoveAll(cell => cell == null);
-            grid.DebugProperties();
-            //Debug.Log($"Grid {grid == null} GridOnCell {cellGrid.Count} grid width: {grid.GetWidth()}");
-            Debug.Log($"is Grid null?: {grid == null}");*/
-
-
         }
-
+        public Cell GetCellViaNameOnGridList(string cellCoordinateAsString)
+        {
+            foreach (var cell in cellGrid)
+            {
+                if(cellCoordinateAsString == cell.name)
+                {  return cell; }
+            }
+            return null;
+        }
 
         public Cell GetCellOnGrid(Vector3 worldPosition)
         {

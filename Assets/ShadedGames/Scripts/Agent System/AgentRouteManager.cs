@@ -17,6 +17,7 @@ namespace ShadedGames.Scripts.AgentSystem
 
         // AgentMovement should only deal with how the Agent will move
         // AgentRouteManager will deal with the Waypoints and nodes33
+        [SerializeField] private AgentMovement agentMovement;
         [SerializeField] private Vector3 currentGridPosition;
         [SerializeField] private Cell currentCellPosition;
         [SerializeField] private Cell targetCellPosition;
@@ -49,6 +50,9 @@ namespace ShadedGames.Scripts.AgentSystem
         }
         public void RequestAStarPath()
         {
+            agentMovement.SetGridPosition();
+            SetCurrentNodePosition(agentMovement.GetAgentCurrentNodePosition());
+            Debug.Log($"Request AstarPath: {agentMovement.GetAgentCurrentNodePosition()}");
             PathRequestManager.Instance.RequestPath(new PathRequest(currentNodePosition, targetNodePosition, OnPathFound)); // TODO:: THIS
         }
 
@@ -73,9 +77,9 @@ namespace ShadedGames.Scripts.AgentSystem
                     int x = Mathf.FloorToInt(point.x / 10);
                     int z = Mathf.FloorToInt(point.z / 10);
                     string gameObjectNodeName = $"{x}{z}";
-                    Debug.Log($"Game Object Name: {gameObjectNodeName} RAW Coords: {point.x} {point.z}");
+//Debug.Log($"Game Object Name: {gameObjectNodeName} RAW Coords: {point.x} {point.z}");
 
-                    Debug.Log($"Node {gameObjectNodeName} exists: {GameObject.Find(gameObjectNodeName) != null} Cell exists: {GridSystem.Instance.GetCellOnGridWithRawCoordinates(x, z)}");
+                   // Debug.Log($"Node {gameObjectNodeName} exists: {GameObject.Find(gameObjectNodeName) != null} Cell exists: {GridSystem.Instance.GetCellOnGridWithRawCoordinates(x, z)}");
 
                     // Get the node from the Cell and assign it to the route 
 
@@ -84,7 +88,7 @@ namespace ShadedGames.Scripts.AgentSystem
                     aStarWaypoints.Add(cell.GetNode());
                 }
 
-                pathFound = true;
+               
             }
             else
             {
@@ -108,6 +112,9 @@ namespace ShadedGames.Scripts.AgentSystem
         {
             aStarWaypoints.Clear();
             aStarWaypoints.Capacity = 0; // might be buggy
+            nodeWaypoints.Clear();
+            nodeWaypoints.Capacity = 0;
+
         }
 
         /// <summary>
@@ -197,7 +204,7 @@ namespace ShadedGames.Scripts.AgentSystem
         /// TODO: CHECK ISSUES WITH LOOPING
         public Node GetNextRouteNodeWaypoint()
         {
-            Debug.Log($"Current Nodes: {currentNodeWaypointsQueue.Count}");
+          //  Debug.Log($"Current Nodes: {currentNodeWaypointsQueue.Count}");
             if (routeIsLooped && currentNodeWaypointsQueue.Count == 0)
             {
                 SetNodeWaypoints(ReloopRoute());

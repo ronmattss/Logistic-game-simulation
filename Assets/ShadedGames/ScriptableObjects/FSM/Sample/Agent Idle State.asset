@@ -12,10 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 228c4f54d0e252e4381b2f62f335122d, type: 3}
   m_Name: Agent Idle State
   m_EditorClassIdentifier: 
-  entryActions: []
+  entryActions:
+  - {fileID: 11400000, guid: d3e846973cb6dee4e954f4648bbdb68c, type: 2}
   updateActions: []
-  exitActions:
-  - {fileID: 11400000, guid: de381b77d1ac1a243865dded48a91c1e, type: 2}
+  exitActions: []
   actionTransitions: []
   transitions:
   - {fileID: 11400000, guid: e9ca1621a7de10345a3d6f21a0206f38, type: 2}

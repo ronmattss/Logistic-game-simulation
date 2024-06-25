@@ -1,4 +1,5 @@
 ﻿using ShadedGames.Scripts.AgentSystem;
+using ShadedGames.Scripts.EventSystem;
 using UnityEngine;
 
 namespace ShadedGames.Scripts.StateMachine
@@ -14,7 +15,7 @@ namespace ShadedGames.Scripts.StateMachine
         public override bool Evaluate(StateMachineDriver driver)
         {
             var driverAgentMovement = driver.GetComponent<AgentMovement>();
-
+           // driver.GetComponent<Agent>().GetAgentRouteManager().ClearAStarNodeWaypoints();
             return driverAgentMovement.GetIsOnDestination();
         }
     }

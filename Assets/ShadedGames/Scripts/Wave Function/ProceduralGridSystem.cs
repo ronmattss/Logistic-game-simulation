@@ -105,9 +105,9 @@ namespace ShadedGames.Scripts.Grid_System
                         Quaternion.identity);
                   generatedObjects.Add(cellObject);
                 }
-                catch (NullReferenceException e)
+                    catch (NullReferenceException e)
                 {
-                    Debug.Log($"Cell at: {x} {y} throwing an error");
+                    Debug.Log($"Cell at: {x} {y} throwing an error {e}");
                     throw new NullReferenceException();
                 }
             }

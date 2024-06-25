@@ -139,9 +139,8 @@ MonoBehaviour:
   currentCellPosition: {fileID: 0}
   currentNodePosition: {fileID: 0}
   targetCellPosition: {fileID: 0}
-  targetNodePosition: {fileID: 0}
-  cellWaypoints: []
-  nodeWaypoints: []
+  currentSpeed: 6
+  distanceToNodeCheck: 4
   isOnDestination: 0
   agent: {fileID: 0}
   meshAgent: {fileID: 0}
@@ -158,6 +157,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b31d752708a9804cbddbf51d9e01d5f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  agentMovement: {fileID: 8224776486664548018}
   currentGridPosition: {x: 0, y: 0, z: 0}
   currentCellPosition: {fileID: 0}
   targetCellPosition: {fileID: 0}
@@ -167,6 +167,7 @@ MonoBehaviour:
   currentNodePosition: {fileID: 0}
   targetNodePosition: {fileID: 0}
   routeIsLooped: 0
+  pathFound: 0
   onReceiveRoute:
     m_PersistentCalls:
       m_Calls: []

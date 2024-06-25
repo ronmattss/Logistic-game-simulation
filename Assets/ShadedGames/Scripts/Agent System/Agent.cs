@@ -18,8 +18,6 @@ namespace ShadedGames.Scripts.AgentSystem
     {
         private Vector3 currentWorldPosition;
         private int traverseSpeed;
-
-        private Rigidbody rigidbody;
         private AgentBehavior agentBehaviour;
 
         [SerializeField] AgentRouteManager agentRouteManager;
@@ -28,6 +26,9 @@ namespace ShadedGames.Scripts.AgentSystem
         [SerializeField] Task task;
 
         public AgentRouteManager GetAgentRouteManager() => agentRouteManager;
+
+        public bool requestedPath = false;
+        
 
 
         // Current Task? 

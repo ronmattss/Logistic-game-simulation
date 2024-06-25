@@ -7,6 +7,7 @@ using UnityEngine;
 using ShadedGames.Scripts.AgentSystem;
 using UnityEngine.UI;
 using ShadedGames.Scripts.Utils;
+using ShadedGames.Scripts.Grid_System;
 
 namespace ShadedGames.Scripts.Managers
 {
@@ -25,6 +26,7 @@ namespace ShadedGames.Scripts.Managers
     {
 
         public Agent selectedAgent;
+
         public List<GeneratedRoute> routes = new();
         public Button selectNodeButton;
         public Button selectNodeLayerButton;
@@ -48,10 +50,12 @@ namespace ShadedGames.Scripts.Managers
 
 
         // BUtton Function
+        // Request A* Path
         public void AgentAStarDemo()
         {
             selectedAgent.GetAgentRouteManager().RequestAStarPath();
         }
+        // Set A* Path
         public void SetAStarRouteToAgent()
         {
             // Get the A* generated Nodes in 
@@ -61,8 +65,59 @@ namespace ShadedGames.Scripts.Managers
                 var newRoute = new GeneratedRoute($"Sample A* Route ({localNodeData.Count})", localNodeData);
                 routes.Add(newRoute);
                 selectedAgent.GetAgentRouteManager().SetNodeWaypoints(routes[0].nodeWaypoint);
+                
             }
         }
+
+        // Get A Random Node
+        // RequestAstarPath
+        // SetAStarRouteToAgent
+        // Go!
+        public IEnumerator SetRandomRoute(Agent agentRequestor)
+        {
+            yield return new WaitForSeconds(5f);
+            if (agentRequestor.requestedPath)
+            {
+                Debug.Log("Agent Already requested a path!");
+                yield return new WaitForSeconds(.5f);
+            }
+            else
+            {
+                var currentGrid = GridSystem.Instance.GetCellGrid();
+                var randCell = Random.Range(0, currentGrid.Count);
+                var selectedCell = currentGrid[randCell];
+
+                Debug.Log($"Requestor: {agentRequestor.name}");
+                agentRequestor.GetAgentRouteManager().SetTargetNodePosition(selectedCell.GetNode());
+
+                yield return new WaitForSeconds(.5f);
+                agentRequestor.GetAgentRouteManager().RequestAStarPath();
+                yield return new WaitForSeconds(.25f);
+               bool changePathFound = SetAStarRouteToAgent(agentRequestor);
+                agentRequestor.GetAgentRouteManager().SetPathFound(changePathFound);
+                agentRequestor.requestedPath = changePathFound;
+            }
+
+        }
+
+        public void StartRequestRandomRouteCoroutine(Agent agentRequestor)
+        {
+            StartCoroutine(SetRandomRoute(agentRequestor)); // Find a way to queue requests
+        }
+
+        public bool SetAStarRouteToAgent(Agent agentRequestor)
+        {
+            // Get the A* generated Nodes in 
+            var localNodeData = agentRequestor.GetAgentRouteManager().GetAStarNodeWaypoints();
+            if (localNodeData.Count > 0)
+            {
+                var newRoute = new GeneratedRoute($"Sample A* Route ({localNodeData.Count})", localNodeData);
+                agentRequestor.GetAgentRouteManager().SetNodeWaypoints(newRoute.nodeWaypoint); 
+                return true;
+            }
+            return false;
+        }
+
 
         public void SetAgentRoute()
         {

@@ -13,10 +13,12 @@ MonoBehaviour:
   m_Name: Agent Move State
   m_EditorClassIdentifier: 
   entryActions:
+  - {fileID: 11400000, guid: cec69c3c264d8ca468488a9572973150, type: 2}
   - {fileID: 11400000, guid: d88d8c08176131841928b532fd925e34, type: 2}
   updateActions:
   - {fileID: 11400000, guid: 82b80c4df657fcc41ae48bbc78d46f03, type: 2}
-  exitActions: []
+  exitActions:
+  - {fileID: 11400000, guid: 36171c468a52e324d8f61cfd3eb43ec6, type: 2}
   actionTransitions: []
   transitions:
   - {fileID: 11400000, guid: ffbdeedb64799514f9959e9c3aff84a6, type: 2}
