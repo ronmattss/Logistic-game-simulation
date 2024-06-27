@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using ShadedGames.Scripts.Grid_System;
 using UnityEngine;
 using UnityEngine.AI;
@@ -21,9 +22,13 @@ namespace ShadedGames.Scripts.AgentSystem
         [SerializeField] private Vector3 currentGridPosition;
         [SerializeField] private Cell currentCellPosition;
         [SerializeField] private Node currentNodePosition;
+        [SerializeField] private Node previousNodePosition;
+
         [SerializeField] private Cell targetCellPosition;
         [SerializeField] private int currentSpeed = 6;
         [SerializeField] private int distanceToNodeCheck = 4;
+        [SerializeField] private int variableSpeed;
+        [SerializeField] private int variableDistanceToNodeCheck;
         [SerializeField] private bool isOnDestination = false;
 
 
@@ -51,6 +56,8 @@ namespace ShadedGames.Scripts.AgentSystem
         {
             agent = GetComponent<Agent>();
             tickRate = debugCurrentSpeed;
+            variableSpeed = currentSpeed;
+            variableDistanceToNodeCheck = distanceToNodeCheck;
 
            // SetGridPosition();
         }
@@ -58,14 +65,13 @@ namespace ShadedGames.Scripts.AgentSystem
         /* public bool GetIsOnDestination() => agent.GetAgentRouteManager().IsOnFinalWaypoint();*/
 
 
-        public Vector3 GetCurrentGridPosition() => currentGridPosition;
-        public void SetCurrentAgentGridPosition(Vector3 gridPosition) => currentGridPosition = gridPosition;
         public Node GetAgentCurrentNodePosition() => currentNodePosition;
 
 
        public  void SetGridPosition()
         {
-            var point = this.transform.position;
+            if (currentNodePosition != null) return;
+            var point = gameObject.transform.position;
             int x = Mathf.FloorToInt(point.x / 10);
             int z = Mathf.FloorToInt(point.z / 10);
             string gameObjectNodeName = $"{x}{z}";
@@ -74,6 +80,75 @@ namespace ShadedGames.Scripts.AgentSystem
             currentNodePosition = currentCellPosition.GetNode();
         }
 
+        public enum Direction
+        {
+            North,
+            East,
+            South,
+            West,
+            None
+        }
+
+        void CheckDirection()
+        {
+            if (agent.GetAgentRouteManager().GetWaypointList().Count == 0) return;
+            var currentNode = currentNodePosition;
+            var lastNode = previousNodePosition;
+           // Debug.Log($"AgentName: {transform.name} Agent current Node Waypoints: {agent.GetAgentRouteManager().GetWaypointList().Count}");
+            var nextNode = currentNode == agent.GetAgentRouteManager().GetWaypointList()[0] ? agent.GetAgentRouteManager().GetWaypointList()[1] : agent.GetAgentRouteManager().GetWaypointList()[0];
+
+            var currentDirection = GetAdjacentNodeDirection(currentNode, lastNode); // Get direction of last node relative to current node
+            var nextDirection = GetAdjacentNodeDirection(currentNode, nextNode);    // Get direction of next node relative to current node
+            Debug.Log($"Current Direction: {currentNode} {lastNode} = {currentDirection} | Next Direction: {currentNode} {nextNode} = {nextDirection} ");
+            if (!AreDirectionsAligned(currentDirection, nextDirection))
+            {
+                // Do Something else when directions are not aligned
+                meshAgent.speed =(float) variableSpeed/2;
+                variableDistanceToNodeCheck = distanceToNodeCheck + 2;
+                Debug.Log($"Changing Direction {currentDirection} {nextDirection}");
+            }
+            else
+            {
+                Debug.Log($"Retaining Direction {currentDirection} {nextDirection}");
+
+                meshAgent.speed = currentSpeed;
+                variableDistanceToNodeCheck = distanceToNodeCheck;
+                // retain Speed
+            }
+        }
+
+        Direction GetAdjacentNodeDirection(Node currentNode, Node nodeToCheck)
+        {
+            var neighbors = currentNode.GetNodeNeighbors();
+            if (nodeToCheck == null) return Direction.None;
+            for (int i = 0; i < neighbors.Length; i++)
+            {
+                if (neighbors[i] == nodeToCheck)
+                {
+                    return (Direction)i;
+                }
+            }
+            return Direction.None;
+        }
+
+        bool AreDirectionsAligned(Direction currentDirection, Direction nextDirection)
+        {
+            // Check if both nodes are either vertical (North or South) or horizontal (East or West)
+            if ((currentDirection == Direction.North || currentDirection == Direction.South) &&
+                (nextDirection == Direction.North || nextDirection == Direction.South))
+            {
+                return true;
+            }
+            if ((currentDirection == Direction.East || currentDirection == Direction.West) &&
+                (nextDirection == Direction.East || nextDirection == Direction.West))
+            {
+                return true;
+            }
+            return false;
+        }
+
+
+        // Check Next Node if it is current Direction
 
 
         // This directs the Agent on where to go
@@ -89,15 +164,7 @@ namespace ShadedGames.Scripts.AgentSystem
         // Using Navmesh Agent Move To Waypoint
         // If tehre are multiple waypoints, Check if agent is near the waypoint
         // if it is change the waypoint to the Next one.
-        public void MoveToWaypoint()
-        {
-            var waypoint = agent.GetAgentRouteManager().GetNextRouteNodeWaypoint();
-            if (waypoint != null)
-            {
-                meshAgent.Move(waypoint.transform.position);
-                isOnDestination = false;
-            }
-        }
+
 
 
 
@@ -115,11 +182,11 @@ namespace ShadedGames.Scripts.AgentSystem
 
         public void MoveToFirstWaypoint()
         {
-            meshAgent.speed = currentSpeed;
+            meshAgent.speed = variableSpeed;
             if (agent.GetAgentRouteManager().CheckIfThereAreWaypointsAvailable())
             {
                 SetDestinationToMeshAgent();
-
+               /* previousNodePosition = currentNodePosition;*/
             }
             else
             {
@@ -132,20 +199,22 @@ namespace ShadedGames.Scripts.AgentSystem
         public void MovementUpdate()
         {
 
+            // NOT SURE CHeckDirection is here or inside SetDestination
 
             //  Debug.Log($"is current Node Position null: {currentNodePosition == null} Distance: {Vector3.Distance(currentNodePosition.transform.position, this.transform.position)}");
-            if (currentNodePosition != null && Vector3.Distance(currentNodePosition.transform.position, this.transform.position) <= distanceToNodeCheck) // Now this should trigger when changing Waypoints
+            if (currentNodePosition != null && Vector3.Distance(currentNodePosition.transform.position, this.transform.position) <= variableDistanceToNodeCheck) // Now this should trigger when changing Waypoints
             {
                 SetDestinationToMeshAgent();
+
             }
 
 
         }
 
          void SetDestinationToMeshAgent()
-        {            
-            currentNodePosition = agent.GetAgentRouteManager().GetNextRouteNodeWaypoint();
-            if(currentNodePosition == null)
+        {
+           var nextNodePosition = agent.GetAgentRouteManager().GetNextRouteNodeWaypoint(); // changed to var so that currentNodePosition will not be null, and the last value will be the last Nodes Position
+            if(nextNodePosition == null)
             {
                 meshAgent.isStopped = true;
                 isOnDestination = true;
@@ -153,9 +222,17 @@ namespace ShadedGames.Scripts.AgentSystem
             else
             {
                 // This gives an error if Current  node position is null lmao
-                meshAgent.SetDestination(currentNodePosition.transform.position);
+                meshAgent.SetDestination(nextNodePosition.transform.position);
+
+                currentCellPosition = nextNodePosition.GetParentCell();
+                previousNodePosition = currentNodePosition;
+                currentNodePosition = nextNodePosition;
+                agent.GetAgentRouteManager().SetCurrentNodePosition(currentNodePosition);
+
                 isOnDestination = false;
                 meshAgent.isStopped = false;
+                CheckDirection();
+
 
             }
 

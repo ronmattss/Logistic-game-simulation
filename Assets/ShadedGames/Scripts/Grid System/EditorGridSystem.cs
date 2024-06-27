@@ -248,7 +248,7 @@ namespace ShadedGames.Scripts.Grid_System
             }
         }
 
-        void Update()
+/*        void Update()
         {
          //   storedGridData.grid.DebugProperties();
          //   grid.DebugProperties();
@@ -258,14 +258,14 @@ namespace ShadedGames.Scripts.Grid_System
                 currentlySelectedGameobject = Selection.activeTransform.gameObject;
             }
 
-        }
-        private void OnEnable()
+        }*/
+/*        private void OnEnable()
         {
             EditorApplication.update += Update;
         }
         private void OnDisable()
         {
             EditorApplication.update -= Update;
-        }
+        }*/
     }
 }

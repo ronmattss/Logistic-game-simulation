@@ -87,7 +87,7 @@ namespace ShadedGames.Scripts.Managers
                 var randCell = Random.Range(0, currentGrid.Count);
                 var selectedCell = currentGrid[randCell];
 
-                Debug.Log($"Requestor: {agentRequestor.name}");
+             //   Debug.Log($"Requestor: {agentRequestor.name}");
                 agentRequestor.GetAgentRouteManager().SetTargetNodePosition(selectedCell.GetNode());
 
                 yield return new WaitForSeconds(.5f);

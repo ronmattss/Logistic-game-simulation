@@ -43,6 +43,10 @@ namespace ShadedGames.Scripts.AgentSystem
         public void SetCurrentNodePosition(Node node) => currentNodePosition = node;
         public void SetTargetNodePosition(Node node) => targetNodePosition = node;
 
+        public Queue<Node> GetWaypointQueue() => currentNodeWaypointsQueue;
+        public List<Node> GetWaypointList() => nodeWaypoints;
+
+
         public bool GetPathFound() => pathFound;
         public void SetPathFound( bool isFound)
         {
@@ -50,6 +54,7 @@ namespace ShadedGames.Scripts.AgentSystem
         }
         public void RequestAStarPath()
         {
+            ClearAStarNodeWaypoints();
             agentMovement.SetGridPosition();
             SetCurrentNodePosition(agentMovement.GetAgentCurrentNodePosition());
             Debug.Log($"Request AstarPath: {agentMovement.GetAgentCurrentNodePosition()}");
