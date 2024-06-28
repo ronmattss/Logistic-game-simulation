@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using ShadedGames.Scripts.AgentSystem;
 using ShadedGames.Scripts.Astar;
 using ShadedGames.Scripts.Grid_System;
 using UnityEngine;
@@ -8,101 +9,111 @@ using UnityEngine;
 /// <summary>
 /// A node in a cell, not all cell has a node
 /// </summary>
-public class Node : MonoBehaviour
+/// 
+
+namespace ShadedGames.Scripts.Grid_System
 {
-    public FieldNode node; // Instantiate on Grid Placement 
-    private Cell parentCell;
-    private Vector3 worldPosition;
-    private Vector3 gridPosition;
-    [SerializeField] private Node[] neigborNodes = new Node[4];
-    [SerializeField] private bool isPathWalkable = true;
-    [SerializeField] private bool isPlaceable = true;
-    [SerializeField] private bool isAWall = true;
 
 
-
-    public void SetParentCell(Cell cell)
+    public class Node : MonoBehaviour
     {
-        parentCell = cell;
-    }
-    public Cell GetParentCell() {  return parentCell; }
-    public Node[] GetNodeNeighbors() => neigborNodes;
-    public Vector3 GetWorldPosition() => worldPosition;
-    public void SetNodeNeighbors(Node neighbor, int nodeIndex)
-    {
-        if (neighbor == null) return;
-        if (nodeIndex <= 3 && nodeIndex >= 0)
+        public FieldNode node; // Instantiate on Grid Placement 
+        private Cell parentCell;
+        private Vector3 worldPosition;
+        private Vector3 gridPosition;
+        [SerializeField] private Node[] neigborNodes = new Node[4];
+        [SerializeField] private bool isPathWalkable = true;
+        [SerializeField] private bool isPlaceable = true;
+        [SerializeField] private bool isAWall = true;
+        [SerializeField] private Agent currentAgentOnNode;
+
+
+        public void SetParentCell(Cell cell)
         {
-            neigborNodes[nodeIndex] = neighbor;
+            parentCell = cell;
         }
-    }
-    public FieldNode GetFieldNode() => node;
+        public void SetCurrentAgentOnTopOfNode(Agent agent) => currentAgentOnNode = agent;
 
-
-    public void InstantiateFieldNode(Vector3 worldPosition, int x, int y, int movementPenalty, bool isPlaceable = true)
-    {
-       // Debug.Log("Init Field Node");
-        node = new FieldNode(isPathWalkable, worldPosition, x, y, 0, this);
-        this.worldPosition = worldPosition;
-    }
-
-    // Start is called before the first frame update
-    void Start()
-    {
-       StartCoroutine(SelfDestruct());
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
-
-
-    private void OnTriggerEnter(Collider other)
-    {
-       
-        if (other.CompareTag("Block"))
+        public Agent GetCurrentAgentOnTopOfNode() => currentAgentOnNode;
+        public Cell GetParentCell() { return parentCell; }
+        public Node[] GetNodeNeighbors() => neigborNodes;
+        public Vector3 GetWorldPosition() => worldPosition;
+        public void SetNodeNeighbors(Node neighbor, int nodeIndex)
         {
-            isPathWalkable = false;
-            isAWall = true;
-            this.GetComponent<Collider>().enabled = false;
-          //  other.GetComponent<Collider>().enabled = false;
-            node.SetIsPath(isPathWalkable);
+            if (neighbor == null) return;
+            if (nodeIndex <= 3 && nodeIndex >= 0)
+            {
+                neigborNodes[nodeIndex] = neighbor;
+            }
         }
-        else if(other.CompareTag("Path"))
+        public FieldNode GetFieldNode() => node;
+
+
+        public void InstantiateFieldNode(Vector3 worldPosition, int x, int y, int movementPenalty, bool isPlaceable = true)
         {
-           // Debug.Log("Walkable Path");
-          //  Debug.Log($"PATH Collission: {other.gameObject.transform.name}");
-            isPathWalkable = true;
-            this.GetComponent<Collider>().enabled = false;
-          //  other.GetComponent<Collider>().enabled = false;
-            node.SetIsPath(isPathWalkable);
+            // Debug.Log("Init Field Node");
+            node = new FieldNode(isPathWalkable, worldPosition, x, y, 0, this);
+            this.worldPosition = worldPosition;
         }
-    }
 
-    public bool RemoveGameObjectIfUnused()
-    {
-        if (isPathWalkable) return true;
-        if (isAWall) return true;
-        return false;
-    }
-
-    IEnumerator SelfDestruct()
-    {
-        Debug.Log($"Testing Self Destruct");
-
-        yield return new WaitForSeconds(1);
-        if (!RemoveGameObjectIfUnused())
+        // Start is called before the first frame update
+        void Start()
         {
-            yield return new WaitForSeconds(0.5f);
-            Debug.Log($"Cleaning up cause of double Bool: {isPathWalkable} {isAWall}");
-            Destroy(this.gameObject);
+            StartCoroutine(SelfDestruct());
         }
-        else
+
+        // Update is called once per frame
+        void Update()
         {
-            GridSystem.Instance.GetCellGrid().Add(parentCell);
-            yield return null;
+
+        }
+
+
+        private void OnTriggerEnter(Collider other)
+        {
+
+            if (other.CompareTag("Block"))
+            {
+                isPathWalkable = false;
+                isAWall = true;
+                this.GetComponent<Collider>().enabled = false;
+                //  other.GetComponent<Collider>().enabled = false;
+                node.SetIsPath(isPathWalkable);
+            }
+            else if (other.CompareTag("Path"))
+            {
+                // Debug.Log("Walkable Path");
+                //  Debug.Log($"PATH Collission: {other.gameObject.transform.name}");
+                isPathWalkable = true;
+                this.GetComponent<Collider>().enabled = false;
+                //  other.GetComponent<Collider>().enabled = false;
+                node.SetIsPath(isPathWalkable);
+            }
+        }
+
+        public bool RemoveGameObjectIfUnused()
+        {
+            if (isPathWalkable) return true;
+            if (isAWall) return true;
+            return false;
+        }
+
+        IEnumerator SelfDestruct()
+        {
+            Debug.Log($"Testing Self Destruct");
+
+            yield return new WaitForSeconds(1);
+            if (!RemoveGameObjectIfUnused())
+            {
+                yield return new WaitForSeconds(0.5f);
+                Debug.Log($"Cleaning up cause of double Bool: {isPathWalkable} {isAWall}");
+                Destroy(this.gameObject);
+            }
+            else
+            {
+                GridSystem.Instance.GetCellGrid().Add(parentCell);
+                yield return null;
+            }
         }
     }
 }

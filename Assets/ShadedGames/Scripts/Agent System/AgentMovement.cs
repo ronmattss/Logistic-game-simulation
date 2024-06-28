@@ -25,11 +25,21 @@ namespace ShadedGames.Scripts.AgentSystem
         [SerializeField] private Node previousNodePosition;
 
         [SerializeField] private Cell targetCellPosition;
-        [SerializeField] private int currentSpeed = 6;
-        [SerializeField] private int distanceToNodeCheck = 4;
-        [SerializeField] private int variableSpeed;
-        [SerializeField] private int variableDistanceToNodeCheck;
         [SerializeField] private bool isOnDestination = false;
+
+        [Header("Manual Speed Control Related Properties")]
+        [SerializeField] private bool isManualControlled = false;
+        [SerializeField] private float currentSpeed = 6;
+        [SerializeField] private int distanceToNodeCheck = 4;
+        [SerializeField] private float accelerationRate = 5f;
+        [SerializeField] private float decelerationRate = 5f;
+        [SerializeField] private float maxSpeed = 20f;
+        [SerializeField] private float tickRate = 0.1f;
+        [SerializeField] private float timer = 0f;
+
+        [Header("Automatic Speed Control Related Properties for NPC")]
+        [SerializeField] private float variableSpeed;
+        [SerializeField] private float variableDistanceToNodeCheck;
 
 
         // for simplicity we gonna just use the most basic one.
@@ -46,8 +56,8 @@ namespace ShadedGames.Scripts.AgentSystem
 
         [SerializeField] bool routeIsLooped = true;
         private int debugCurrentSpeed = 1;
-        private float tickRate = 1;
-        private float timer = 0.25f; // update Movement info every .25f seconds
+
+        // update Movement info every .25f seconds
         // FOR MOVEMENT, should we use nav mesh OR just node paths?
 
 
@@ -100,6 +110,7 @@ namespace ShadedGames.Scripts.AgentSystem
             var currentDirection = GetAdjacentNodeDirection(currentNode, lastNode); // Get direction of last node relative to current node
             var nextDirection = GetAdjacentNodeDirection(currentNode, nextNode);    // Get direction of next node relative to current node
             Debug.Log($"Current Direction: {currentNode} {lastNode} = {currentDirection} | Next Direction: {currentNode} {nextNode} = {nextDirection} ");
+           
             if (!AreDirectionsAligned(currentDirection, nextDirection))
             {
                 // Do Something else when directions are not aligned
@@ -174,7 +185,7 @@ namespace ShadedGames.Scripts.AgentSystem
 
         private void FixedUpdate()
         {
-            //DebugMoveUpdate();
+            DebugMoveUpdate();
         }
 
 
@@ -231,7 +242,10 @@ namespace ShadedGames.Scripts.AgentSystem
 
                 isOnDestination = false;
                 meshAgent.isStopped = false;
+                if(!isManualControlled)
+                {
                 CheckDirection();
+                }
 
 
             }
@@ -240,15 +254,49 @@ namespace ShadedGames.Scripts.AgentSystem
 
         public void DebugMoveUpdate()
         {
-            timer += Time.fixedDeltaTime;
+            timer += Time.deltaTime;
 
             if (timer >= tickRate)
             {
-                Debug.Log("1 second Tick");
+                // Simulate pressing the acceleration and deceleration buttons for debugging
+                if (Input.GetKey(KeyCode.W))
+                {
+                    AccelerateVehicle();
+                }
+                if (Input.GetKey(KeyCode.S))
+                {
+                    DecelerateVehicle();
+                }
 
-                MovementUpdate();
-                timer = 0;
+                timer = 0f;
             }
+        }
+
+        public void AccelerateVehicle()
+        {
+            // Increase the current speed by the acceleration rate
+            currentSpeed += accelerationRate * Time.deltaTime;
+            // Clamp the speed to not exceed the max speed
+            currentSpeed = Mathf.Clamp(currentSpeed, 0f, maxSpeed);
+
+            ChangeSpeed();
+        }
+
+        public void DecelerateVehicle()
+        {
+            // Decrease the current speed by the deceleration rate
+            currentSpeed -= decelerationRate * Time.deltaTime;
+            // Clamp the speed to not fall below 0
+            currentSpeed = Mathf.Clamp(currentSpeed, 0f, maxSpeed);
+
+            ChangeSpeed();
+        }
+        public void ChangeSpeed()
+        {
+            // Apply the current speed to the vehicle
+            // This is where you would add code to update the vehicle's velocity or position
+            Debug.Log($"Current Speed: {currentSpeed}");
+            meshAgent.speed = currentSpeed;
         }
 
 
