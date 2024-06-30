@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using ProjectAssets.Scripts.Util;
 using ShadedGames.Scripts.Astar;
-using ShadedGames.Scripts.Grid_System;
 using Unity.Mathematics;
 using UnityEditor;
 using UnityEngine;

@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 3100500074614975377}
   - component: {fileID: 3122793854084751139}
   - component: {fileID: -7934915270398933930}
+  - component: {fileID: 231937948636976553}
   m_Layer: 0
   m_Name: BlankCellPrefab
   m_TagString: Untagged
@@ -81,6 +82,7 @@ MonoBehaviour:
   isPathWalkable: 0
   isPlaceable: 0
   isAWall: 0
+  currentAgentOnNode: {fileID: 0}
 --- !u!65 &-7934915270398933930
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -102,3 +104,17 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 10, y: 1, z: 10}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &231937948636976553
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6344061975342280717}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ba2c36d99d57d5240bdfeff93cfc0bfa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  passengerList: []
+  currentVehicle: {fileID: 0}

@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using ProjectAssets.Scripts.Util;
+using ShadedGames.Scripts.Grid_System;
 
 namespace ShadedGames.Scripts.Astar
 {

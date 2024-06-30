@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using ProjectAssets.Scripts.Util;
 using ShadedGames.Scripts.Astar;
-using ShadedGames.Scripts.Grid_System;
 using Unity.Mathematics;
 using UnityEngine;
 
@@ -12,7 +11,7 @@ namespace ShadedGames.Scripts.Grid_System
     /// <summary>
     /// TODO: Separate Grid System used in Editor and IN GAME
     /// </summary>
-     public class GridSystem : Singleton<GridSystem>
+    public class GridSystem : Singleton<GridSystem>
     {
 
         [SerializeField] private Grid<GridNodeOjbect> grid;  // This is the GRID that will be used by this system

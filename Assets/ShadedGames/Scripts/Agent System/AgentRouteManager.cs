@@ -202,6 +202,8 @@ namespace ShadedGames.Scripts.AgentSystem
             recentWaypoints.Push(nextWaypoint);
             return nextWaypoint;
         }
+
+        public Node CheckNextNodeWaypoint() => currentNodeWaypointsQueue.Peek();
         /// <summary>
         /// This wraps the function of using Nodes to be used on Movements or Routes. Probably ALso maybe used on Pathfinding
         /// </summary>

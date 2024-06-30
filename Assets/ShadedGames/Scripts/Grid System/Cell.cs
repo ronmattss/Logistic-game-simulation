@@ -15,7 +15,8 @@ using UnityEngine;
 /// 
 /// It makes more sense to call the node as cell cause you know it's inside a grid system.
 /*[ExecuteAlways]
-*/public class Cell : MonoBehaviour
+*/
+public class Cell : MonoBehaviour
 {
     private Vector3 worldPosition;
     [SerializeField] private Node node;

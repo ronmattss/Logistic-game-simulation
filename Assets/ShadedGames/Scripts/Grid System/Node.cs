@@ -2,17 +2,16 @@ using System.Collections;
 using System.Collections.Generic;
 using ShadedGames.Scripts.AgentSystem;
 using ShadedGames.Scripts.Astar;
-using ShadedGames.Scripts.Grid_System;
 using UnityEngine;
-
-
-/// <summary>
-/// A node in a cell, not all cell has a node
-/// </summary>
-/// 
 
 namespace ShadedGames.Scripts.Grid_System
 {
+    /// <summary>
+    /// A node in a cell, not all cell has a node
+    /// </summary>
+    /// 
+
+
 
 
     public class Node : MonoBehaviour
@@ -26,6 +25,7 @@ namespace ShadedGames.Scripts.Grid_System
         [SerializeField] private bool isPlaceable = true;
         [SerializeField] private bool isAWall = true;
         [SerializeField] private Agent currentAgentOnNode;
+        [SerializeField] private NodeBehaviour nodeBehaviour;
 
 
         public void SetParentCell(Cell cell)
@@ -76,7 +76,7 @@ namespace ShadedGames.Scripts.Grid_System
             {
                 isPathWalkable = false;
                 isAWall = true;
-                this.GetComponent<Collider>().enabled = false;
+                GetComponent<Collider>().enabled = false;
                 //  other.GetComponent<Collider>().enabled = false;
                 node.SetIsPath(isPathWalkable);
             }
@@ -85,7 +85,7 @@ namespace ShadedGames.Scripts.Grid_System
                 // Debug.Log("Walkable Path");
                 //  Debug.Log($"PATH Collission: {other.gameObject.transform.name}");
                 isPathWalkable = true;
-                this.GetComponent<Collider>().enabled = false;
+                GetComponent<Collider>().enabled = false;
                 //  other.GetComponent<Collider>().enabled = false;
                 node.SetIsPath(isPathWalkable);
             }
@@ -107,7 +107,7 @@ namespace ShadedGames.Scripts.Grid_System
             {
                 yield return new WaitForSeconds(0.5f);
                 Debug.Log($"Cleaning up cause of double Bool: {isPathWalkable} {isAWall}");
-                Destroy(this.gameObject);
+                Destroy(gameObject);
             }
             else
             {
