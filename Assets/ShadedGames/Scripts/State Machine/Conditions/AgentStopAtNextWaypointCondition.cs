@@ -7,6 +7,11 @@ namespace ShadedGames.Scripts.StateMachine
     public class AgentStopAtNextWaypointCondition : BaseCondition
     {
 
+        /// <summary>
+        ///  NOT FINISH
+        /// </summary>
+        /// <param name="driver"></param>
+        /// <returns></returns>
         public override bool Evaluate(StateMachineDriver driver)
         {
             var driverRouteManager = driver.GetComponent<AgentRouteManager>();
