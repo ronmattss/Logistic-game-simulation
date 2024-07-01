@@ -18,7 +18,7 @@ namespace ShadedGames.Scripts.AgentSystem
     {
         private Vector3 currentWorldPosition;
         private int traverseSpeed;
-        private AgentBehavior agentBehaviour;
+        private AgentStateMachine agentBehaviour;
 
         [SerializeField] AgentRouteManager agentRouteManager;
 
@@ -52,7 +52,7 @@ namespace ShadedGames.Scripts.AgentSystem
 
         public Vector3 GetCurrentAgentWorldPosition() => currentWorldPosition;
         public void SetCurrentAgentWorldPosition(Vector3 worldPosition) => currentWorldPosition = worldPosition;
-        public AgentBehavior GetAgentBehaviour() => agentBehaviour;
+        public AgentStateMachine GetAgentBehaviour() => agentBehaviour;
 
         // Create a Dynamic virtual function that can be overwritten based on how it will move?
         // Start is called before the first frame update
@@ -60,7 +60,7 @@ namespace ShadedGames.Scripts.AgentSystem
 
         void Awake()
         {
-            agentBehaviour = GetComponent<AgentBehavior>();
+            agentBehaviour = GetComponent<AgentStateMachine>();
             agentRouteManager = GetComponent<AgentRouteManager>();
         }
 

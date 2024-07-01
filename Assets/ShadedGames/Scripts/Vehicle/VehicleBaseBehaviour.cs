@@ -13,8 +13,8 @@ namespace ShadedGames.Scripts.Vehicles
 
         // Embark Disembark Passengers
         public VehicleProperties vehicleProperties;
-       [SerializeField] List<PassengerBehaviour> passengerGameObjects = new List<PassengerBehaviour>();
-        [SerializeField] List<Node> passengerStopNodes = new List<Node>();
+       [SerializeField] public List<PassengerBehaviour> passengerGameObjects = new List<PassengerBehaviour>();
+        [SerializeField] public List<Node> passengerStopNodes = new List<Node>();
 
         [SerializeField] int numberOfPassengersAllowed;
         [SerializeField] int currentNumberOfPassengers = 0;
@@ -22,6 +22,11 @@ namespace ShadedGames.Scripts.Vehicles
         [SerializeField] Dictionary<PassengerBehaviour, Node> passengerKeyValuePairs = new Dictionary<PassengerBehaviour, Node>();
         [SerializeField] Node currentNode;
         [SerializeField] Node nextNode;
+
+        public bool useTickRate = false;
+        public float countdownTime = 10f; // Time to countdown from something (e.g Loading / unloading)
+        public float tickRate = 1f; // Tick rate in seconds
+        private float timer = 0f;
 
         void Awake()
         {
@@ -37,20 +42,23 @@ namespace ShadedGames.Scripts.Vehicles
         {
             nextNode = nextNodeDestination;
         }
+        public Dictionary<PassengerBehaviour, Node> GetPassengerKeyValuePairs() => passengerKeyValuePairs;
 
         // Update is called once per frame
-        void Update() 
-        {
 
-        }
         // This will go with a new State
         // thjis will be like a request to the passenger
+        public void SetCountDownTimer(float timerCountDown)
+        {
+            countdownTime = timerCountDown;
+        }
         void EmbarkPassenger(PassengerBehaviour passengerGameObject)
         {
             if(currentNumberOfPassengers <= numberOfPassengersAllowed) 
             {
-                passengerKeyValuePairs.Add(passengerGameObject, passengerGameObject.passengerNodeDestination);
                 passengerGameObjects.Add(passengerGameObject);
+                
+                passengerKeyValuePairs.Add(passengerGameObject, passengerGameObject.passengerNodeDestination);
                 // add node to stop or Get the Waypoints of route if the node is there
                 // if node is in route add passenger
                 // add node to the passenger stop nodes
@@ -73,5 +81,42 @@ namespace ShadedGames.Scripts.Vehicles
             var result = agentRouteManager.GetWaypointList().Find(x => x == nodeToCheck);
             return result;
         }
+
+        void Update()
+        {
+            if (!useTickRate) return;
+            timer += Time.deltaTime;
+
+            if (timer >= tickRate)  // Call function every one second
+            {
+                Countdown();
+                timer = 0f;
+            }
+        }
+
+
+
+        void Countdown()
+        {
+            if (countdownTime > 0)
+            {
+                countdownTime -= tickRate;
+                Debug.Log("Countdown: " + countdownTime);
+
+                if (countdownTime <= 0)
+                {
+                    countdownTime = 0;
+                    OnCountdownEnd();
+                }
+            }
+        }
+
+        void OnCountdownEnd()
+        {
+            Debug.Log("Countdown finished!");
+            // Add additional logic here for when the countdown finishes
+        }
+
+
     }
 }

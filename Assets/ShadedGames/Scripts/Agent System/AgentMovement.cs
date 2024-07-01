@@ -31,6 +31,7 @@ namespace ShadedGames.Scripts.AgentSystem
 
         [SerializeField] private bool isOnDestination = false;
 
+        [Header("Speed Control Debugging")]
         [Header("Manual Speed Control Related Properties")]
         [SerializeField] private bool isManualControlled = false;
         [SerializeField] private float currentSpeed = 6;
@@ -44,6 +45,7 @@ namespace ShadedGames.Scripts.AgentSystem
         [Header("Automatic Speed Control Related Properties for NPC")]
         [SerializeField] private float variableSpeed;
         [SerializeField] private float variableDistanceToNodeCheck;
+        
 
 
         // for simplicity we gonna just use the most basic one.
